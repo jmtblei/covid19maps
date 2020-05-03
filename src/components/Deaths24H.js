@@ -1,35 +1,42 @@
-import React, { Fragment } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, Fragment } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Svg, Rect, Text } from "@potion/element";
 import { Treemap } from "@potion/layout";
 import { Tooltip } from "@material-ui/core";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { v4 as uuidv4 }from "uuid";
+import { fetchSummaryData } from "../actions/index";
 
 export default () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchSummaryData())
+    }, []);
+
     const countryData = useSelector(state => state.summaryData.Countries);
-    // console.log("state data check", countryData);
-
-    const top50New = countryData
-        .filter(data => data.NewConfirmed > 0)
-        .sort((a, b) => b.NewConfirmed - a.NewConfirmed).slice(0, 50)
-        .map((a, index) => ({...a, id: uuidv4(index)}));
-    // console.log("top 50 countries by #new confirmed cases", top50New);
-
-    const percentageChange = (countryChange, globalChange) => {
-        return ((countryChange / globalChange) * 100).toFixed(2)
-    };
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString() + " " + new Date(date).toLocaleTimeString();
     }
     
-    const arrangeData = (data) => {
-        let globalChange = data.reduce((a, c) => a + c.NewConfirmed, 0);
+    const percentageChange = (countryChange, globalChange) => {
+        return ((countryChange / globalChange) * 100).toFixed(2)
+    };
+
+    //TOP 50 COUNTRIES BY NEW CONFIRMED DEATHS (24H)---------------------------------------------
+    const top50NewDeaths = countryData
+        .filter(data => data.NewDeaths > 0)
+        .sort((a, b) => b.NewDeaths - a.NewDeaths).slice(0, 50)
+        // .map((a, index) => ({...a, id: uuidv4(index)}));
+    console.log("new confirmed deaths", top50NewDeaths);
+
+    const arrange50NewDeathsData = (data) => {
+        let globalChange = data.reduce((a, c) => a + c.NewDeaths, 0);
         return data.map(datum => {
             return {
                 key: datum.id,
-                value: percentageChange(datum.NewConfirmed, globalChange),
+                value: percentageChange(datum.NewDeaths, globalChange),
                 country: datum.Country,
                 countrycode: datum.CountryCode,
                 dateupdated: formatDate(datum.Date),
@@ -40,44 +47,44 @@ export default () => {
             }
         })
     };
-    // console.log("arrange check", arrangeData(top50New));
+    //-------------------------------------------------------------------------------------------
     
     const fontResize = (x0, x1, y0, y1) => {
         borderMatch =  x1-x0 < y1-y0 ? ((x1 - x0) / 8) : ((y1 - y0) / 8);
         return borderMatch  
-    }
+    };
 
     let borderMatch;
     let colorChange;
 
-
     const colorCode = (data) => {
-        colorChange = data.newcases === 0 ? "#DEF5FF" 
-        : data.newcases <= 100 ? "#36BB35" 
-        : data.newcases <= 500 ? "#00FF00"
-        : data.newcases <= 1000 ? "#FFFF00"
-        : data.newcases <= 2000 ? "#F4C430"
-        : data.newcases <= 5000 ? "#FFA000"
-        : data.newcases <= 7500 ? "#FF681F"
-        : data.newcases <= 10000 ? "#FF0000"
-        : "#860111";
-        return (
-            colorChange
-        )
-    }
+            colorChange = data.newdeaths === 0 ? "#DEF5FF" 
+            : data.value <= .1 ? "#36BB35" 
+            : data.value <= .5 ? "#00FF00"
+            : data.value <= 1 ? "#FFFF00"
+            : data.value <= 2 ? "#F4C430"
+            : data.value <= 5 ? "#FFA000"
+            : data.value <= 7.5 ? "#FF681F"
+            : data.value <= 10 ? "#FF0000"
+            : "#860111";
+            return (
+                colorChange
+            )
+
+    };
     
     return (
         <div>
             <TransformWrapper defaultScale={1}>
             {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
                 <React.Fragment>
-                    <div className="tools">
-                        <button onClick={resetTransform}>Reset</button>
+                    <div>
+                        <button onClick={resetTransform}>Reset Zoom</button>
                     </div>
                 <TransformComponent>
                 <Svg width={window.innerWidth} height={window.innerHeight - 200}>
                 <Treemap
-                    data={{children: arrangeData(top50New)}}
+                    data={{children: arrange50NewDeathsData(top50NewDeaths)}}
                     sum={datum => datum.value}
                     size={[window.innerWidth, (window.innerHeight - 200)]}
                 >
@@ -88,8 +95,8 @@ export default () => {
                         <Tooltip title={
                             <Fragment>
                                 <h2>{data.country}</h2>
-                                <h2>New confirmed cases: {data.newcases}</h2>
-                                <h2>% Global new cases: {data.value}%</h2>
+                                <h2>New confirmed deaths: {data.newdeaths}</h2>
+                                <h2>% Global new deaths: {data.value}%</h2>
                                 <h2>Date Updated: {data.dateupdated}</h2>
                             </Fragment>
                         }>
@@ -120,7 +127,7 @@ export default () => {
                                 color="black"
                             >
                                 <tspan dy={borderMatch}>
-                                    +{data.newcases}
+                                    +{data.newdeaths}
                                 </tspan>   
                             </Text>
                             <Text
