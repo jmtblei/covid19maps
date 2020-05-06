@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { useSelector } from "react-redux";
-import { Svg, Rect, Text } from "@potion/element";
-import { Treemap } from "@potion/layout";
+import { Svg, Rect, Text, Circle } from "@potion/element";
+import { Treemap, Pack } from "@potion/layout";
 import { Tooltip } from "@material-ui/core";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { v4 as uuidv4 }from "uuid";
@@ -12,6 +12,7 @@ export default () => {
     const top50AllCases = countryData
         .filter(data => data.TotalConfirmed > 0)
         .sort((a, b) => b.TotalConfirmed - a.TotalConfirmed).slice(0, 50)
+        // .map((a, index) => ({...a, id: uuidv4(index)}));
 
     const percentageChange = (countryChange, globalChange) => {
         return ((countryChange / globalChange) * 100).toFixed(2)
@@ -37,13 +38,14 @@ export default () => {
             }
         })
     };
+    //-------------------------- only for treemaps
+    // const fontResize = (x0, x1, y0, y1) => {
+    //     borderMatch =  x1-x0 < y1-y0 ? ((x1 - x0) / 8) : ((y1 - y0) / 8);
+    //     return borderMatch  
+    // }
     
-    const fontResize = (x0, x1, y0, y1) => {
-        borderMatch =  x1-x0 < y1-y0 ? ((x1 - x0) / 8) : ((y1 - y0) / 8);
-        return borderMatch  
-    }
-
-    let borderMatch;
+    // let borderMatch;
+    //--------------------------
     let colorChange;
 
 
@@ -72,7 +74,8 @@ export default () => {
                     </div>
                 <TransformComponent>
                 <Svg width={window.innerWidth} height={window.innerHeight - 200}>
-                <Treemap
+                {/* REPLACING TREEMAP/RECT WITH PACK/CIRCLES*/}
+                {/* <Treemap
                     data={{children: arrange50AllCasesData(top50AllCases)}}
                     sum={datum => datum.value}
                     size={[window.innerWidth, (window.innerHeight - 200)]}
@@ -90,7 +93,7 @@ export default () => {
                             </Fragment>
                         }>
                             <Rect
-                                key={key}
+                                key={data.id}
                                 x={x0}
                                 y={y0}
                                 width={x1 - x0}
@@ -131,7 +134,43 @@ export default () => {
                             </Text>
                      </>
                     ))}
-                </Treemap>
+                </Treemap> */}
+                <Pack
+                    data={{children: arrange50AllCasesData(top50AllCases)}}
+                    sum={datum => datum.value}
+                    size={[window.innerWidth, (window.innerHeight - 200)]}
+                    includeRoot={false}
+                >
+                    {nodes => nodes.map(({ x, y, r, data }) => (
+                    <>
+                        {colorCode(data)}
+                        <Tooltip title={
+                            <Fragment>
+                                <h2>{data.country}</h2>
+                                <h2>Total confirmed cases: {data.totalconfirmed}</h2>
+                                <h2>% Global cases: {data.value}%</h2>
+                                <h2>Date Updated: {data.dateupdated}</h2>
+                            </Fragment>
+                        }>
+                            <Circle
+                                key={data.id}
+                                cx={x}
+                                cy={y}
+                                r={r}
+                                fill={colorChange}
+                                stroke='#01579b'
+                            />
+                        </Tooltip>
+                            <Text
+                                x={x*.99}
+                                y={y}
+                                stroke="black"
+                            >
+                                {data.countrycode}
+                            </Text>
+                     </>
+                    ))}
+                </Pack>
                 </Svg>
                 </TransformComponent>
                 </React.Fragment>
