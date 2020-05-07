@@ -1,7 +1,7 @@
 import React, { useEffect, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Svg, Rect, Text } from "@potion/element";
-import { Treemap } from "@potion/layout";
+import { Svg, Rect, Text, Circle } from "@potion/element";
+import { Treemap,Pack } from "@potion/layout";
 import { Tooltip } from "@material-ui/core";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { v4 as uuidv4 }from "uuid";
@@ -25,12 +25,11 @@ export default () => {
     };
 
     //TOP 50 COUNTRIES BY NEW CONFIRMED CASES (24H) ---------------------------------------------
-
     const top50NewCases = countryData
         .filter(data => data.NewConfirmed > 0)
         .sort((a, b) => b.NewConfirmed - a.NewConfirmed).slice(0, 50)
-        // .map((a, index) => ({...a, id: uuidv4(index)}));
-    console.log("new confirmed cases", top50NewCases);
+    //     // .map((a, index) => ({...a, id: uuidv4(index)}));
+    // console.log("new confirmed cases", top50NewCases);
 
     const arrange50NewCasesData = (data) => {
         let globalChange = data.reduce((a, c) => a + c.NewConfirmed, 0);
@@ -50,12 +49,14 @@ export default () => {
     };
     //-------------------------------------------------------------------------------------------
     
-    const fontResize = (x0, x1, y0, y1) => {
-        borderMatch =  x1-x0 < y1-y0 ? ((x1 - x0) / 8) : ((y1 - y0) / 8);
-        return borderMatch  
-    };
+    //-------------------------- only for treemaps
+    // const fontResize = (x0, x1, y0, y1) => {
+    //     borderMatch =  x1-x0 < y1-y0 ? ((x1 - x0) / 8) : ((y1 - y0) / 8);
+    //     return borderMatch  
+    // };
 
-    let borderMatch;
+    // let borderMatch;
+    //--------------------------
     let colorChange;
 
     const colorCode = (data) => {
@@ -83,11 +84,12 @@ export default () => {
                         <button onClick={resetTransform}>Reset Zoom</button>
                     </div>
                 <TransformComponent>
-                <Svg width={window.innerWidth} height={window.innerHeight - 200}>
-                <Treemap
+                <Svg width={window.innerWidth} height={window.innerHeight - 100}>
+                {/* REPLACING TREEMAP/RECT WITH PACK/CIRCLES*/}
+                {/* <Treemap
                     data={{children: arrange50NewCasesData(top50NewCases)}}
                     sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 200)]}
+                    size={[window.innerWidth, (window.innerHeight - 100)]}
                 >
                     {nodes => nodes.map(({ key, x0, y0, x1, y1, data }) => (
                     <>
@@ -143,7 +145,45 @@ export default () => {
                             </Text>
                      </>
                     ))}
-                </Treemap>
+                </Treemap> */}
+                <Pack
+                    data={{children: arrange50NewCasesData(top50NewCases)}}
+                    sum={datum => datum.value}
+                    size={[window.innerWidth, (window.innerHeight - 100)]}
+                    includeRoot={false}
+                >
+                    {nodes => nodes.map(({ x, y, r, data }) => (
+                    <>
+                        {colorCode(data)}
+                        <Tooltip title={
+                            <Fragment>
+                                <h2>{data.country}</h2>
+                                <h2>New confirmed cases: {data.newcases}</h2>
+                                <h2>% Global new cases: {data.value}%</h2>
+                                <h2>Date Updated: {data.dateupdated}</h2>
+                            </Fragment>
+                        }>
+                            <Circle
+                                key={data.id}
+                                cx={x}
+                                cy={y}
+                                r={r}
+                                fill={colorChange}
+                                stroke='#01579b'
+                            />
+                        </Tooltip>
+                            <Text
+                                x={x*.99}
+                                y={y}
+                                stroke="black"
+                            >
+                                <tspan>
+                                    {data.countrycode}
+                                </tspan>
+                            </Text>
+                     </>
+                    ))}
+                </Pack>
                 </Svg>
                 </TransformComponent>
                 </React.Fragment>

@@ -1,7 +1,7 @@
 import React, { useEffect, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Svg, Rect, Text } from "@potion/element";
-import { Treemap } from "@potion/layout";
+import { Svg, Rect, Text, Circle } from "@potion/element";
+import { Treemap, Pack } from "@potion/layout";
 import { Tooltip } from "@material-ui/core";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { v4 as uuidv4 }from "uuid";
@@ -29,7 +29,7 @@ export default () => {
         .filter(data => data.TotalDeaths > 0)
         .sort((a, b) => b.TotalDeaths - a.TotalDeaths).slice(0, 50)
         // .map((a, index) => ({...a, id: uuidv4(index)}));
-    console.log("all-time confirmed deaths", top50AllDeaths);
+    // console.log("all-time confirmed deaths", top50AllDeaths);
 
     const arrange50AllDeathsData = (data) => {
         let globalChange = data.reduce((a, c) => a + c.TotalDeaths, 0);
@@ -49,12 +49,14 @@ export default () => {
     };
     //-------------------------------------------------------------------------------------------
     
-    const fontResize = (x0, x1, y0, y1) => {
-        borderMatch =  x1-x0 < y1-y0 ? ((x1 - x0) / 8) : ((y1 - y0) / 8);
-        return borderMatch  
-    };
+    //-------------------------- only for treemaps
+    // const fontResize = (x0, x1, y0, y1) => {
+    //     borderMatch =  x1-x0 < y1-y0 ? ((x1 - x0) / 8) : ((y1 - y0) / 8);
+    //     return borderMatch  
+    // };
 
-    let borderMatch;
+    // let borderMatch;
+    //--------------------------
     let colorChange;
 
     const colorCode = (data) => {
@@ -82,11 +84,12 @@ export default () => {
                         <button onClick={resetTransform}>Reset Zoom</button>
                     </div>
                 <TransformComponent>
-                <Svg width={window.innerWidth} height={window.innerHeight - 200}>
-                <Treemap
+                <Svg width={window.innerWidth} height={window.innerHeight - 100}>
+                {/* REPLACING TREEMAP/RECT WITH PACK/CIRCLES*/}
+                {/* <Treemap
                     data={{children: arrange50AllDeathsData(top50AllDeaths)}}
                     sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 200)]}
+                    size={[window.innerWidth, (window.innerHeight - 100)]}
                 >
                     {nodes => nodes.map(({ key, x0, y0, x1, y1, data }) => (
                     <>
@@ -142,7 +145,45 @@ export default () => {
                             </Text>
                      </>
                     ))}
-                </Treemap>
+                </Treemap> */}
+                <Pack
+                    data={{children: arrange50AllDeathsData(top50AllDeaths)}}
+                    sum={datum => datum.value}
+                    size={[window.innerWidth, (window.innerHeight - 100)]}
+                    includeRoot={false}
+                >
+                    {nodes => nodes.map(({ x, y, r, data }) => (
+                    <>
+                        {colorCode(data)}
+                        <Tooltip title={
+                            <Fragment>
+                                <h2>{data.country}</h2>
+                                <h2>Total confirmed deaths: {data.totaldeahs}</h2>
+                                <h2>% Global deaths: {data.value}%</h2>
+                                <h2>Date Updated: {data.dateupdated}</h2>
+                            </Fragment>
+                        }>
+                            <Circle
+                                key={data.id}
+                                cx={x}
+                                cy={y}
+                                r={r}
+                                fill={colorChange}
+                                stroke='#01579b'
+                            />
+                        </Tooltip>
+                            <Text
+                                x={x*.99}
+                                y={y}
+                                stroke="black"
+                            >
+                                <tspan>
+                                    {data.countrycode}
+                                </tspan>
+                            </Text>
+                     </>
+                    ))}
+                </Pack>
                 </Svg>
                 </TransformComponent>
                 </React.Fragment>

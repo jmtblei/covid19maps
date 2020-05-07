@@ -13,6 +13,7 @@ export default () => {
         .filter(data => data.TotalConfirmed > 0)
         .sort((a, b) => b.TotalConfirmed - a.TotalConfirmed).slice(0, 50)
         // .map((a, index) => ({...a, id: uuidv4(index)}));
+    // console.log("all confirmed cases", top50AllCases);
 
     const percentageChange = (countryChange, globalChange) => {
         return ((countryChange / globalChange) * 100).toFixed(2)
@@ -73,12 +74,12 @@ export default () => {
                         <button onClick={resetTransform}>Reset Zoom</button>
                     </div>
                 <TransformComponent>
-                <Svg width={window.innerWidth} height={window.innerHeight - 200}>
+                <Svg width={window.innerWidth} height={window.innerHeight - 100}>
                 {/* REPLACING TREEMAP/RECT WITH PACK/CIRCLES*/}
                 {/* <Treemap
                     data={{children: arrange50AllCasesData(top50AllCases)}}
                     sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 200)]}
+                    size={[window.innerWidth, (window.innerHeight - 100)]}
                 >
                     {nodes => nodes.map(({ key, x0, y0, x1, y1, data }) => (
                     <>
@@ -138,7 +139,7 @@ export default () => {
                 <Pack
                     data={{children: arrange50AllCasesData(top50AllCases)}}
                     sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 200)]}
+                    size={[window.innerWidth, (window.innerHeight - 100)]}
                     includeRoot={false}
                 >
                     {nodes => nodes.map(({ x, y, r, data }) => (
@@ -166,7 +167,9 @@ export default () => {
                                 y={y}
                                 stroke="black"
                             >
-                                {data.countrycode}
+                                <tspan>
+                                    {data.countrycode}
+                                </tspan>
                             </Text>
                      </>
                     ))}

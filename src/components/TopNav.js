@@ -28,13 +28,13 @@ export default function SimpleMenu() {
           onClose={handleClose}
         >
             <Link to="/">
-                <MenuItem onClick={handleClose}>Confirmed Cases(All Time)</MenuItem>
+                <MenuItem onClick={handleClose}>Confirmed Cases (All Time)</MenuItem>
             </Link>
             <Link to="/confirmed-24h">
                 <MenuItem onClick={handleClose}>Confirmed Cases (24H)</MenuItem>
             </Link>
             <Link to="/deaths-24h">
-                <MenuItem onClick={handleClose}>Confirmed Deaths(24H)</MenuItem>
+                <MenuItem onClick={handleClose}>Confirmed Deaths (24H)</MenuItem>
             </Link>
             <Link to="/deaths-all-time">
                 <MenuItem onClick={handleClose}>Confirmed Deaths (All Time)</MenuItem>
