@@ -2,9 +2,10 @@ import React, { Fragment } from "react";
 import { useSelector } from "react-redux";
 import { Svg, Rect, Text, Circle } from "@potion/element";
 import { Treemap, Pack } from "@potion/layout";
-import { Tooltip } from "@material-ui/core";
+import { Tooltip, Button } from "@material-ui/core";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { v4 as uuidv4 }from "uuid";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 export default () => {
     const countryData = useSelector(state => state.summaryData.Countries);
@@ -67,11 +68,21 @@ export default () => {
     
     return (
         <div>
+            <div>
+                <Alert severity="info">
+                    <AlertTitle>
+                        These are the top 50 countries with the most confirmed cases
+                    </AlertTitle>
+                    <strong>
+                        Mouse over data points for additional details.
+                    </strong>
+                </Alert>
+            </div>
             <TransformWrapper defaultScale={1}>
             {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
                 <React.Fragment>
                     <div className="tools">
-                        <button onClick={resetTransform}>Reset Zoom</button>
+                        <Button onClick={resetTransform} variant="outlined">Reset Zoom</Button>
                     </div>
                 <TransformComponent>
                 <Svg width={window.innerWidth} height={window.innerHeight - 100}>
@@ -139,7 +150,7 @@ export default () => {
                 <Pack
                     data={{children: arrange50AllCasesData(top50AllCases)}}
                     sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 100)]}
+                    size={[window.innerWidth, (window.innerHeight - 200)]}
                     includeRoot={false}
                 >
                     {nodes => nodes.map(({ x, y, r, data }) => (

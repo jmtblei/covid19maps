@@ -2,10 +2,11 @@ import React, { useEffect, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Svg, Rect, Text, Circle } from "@potion/element";
 import { Treemap, Pack } from "@potion/layout";
-import { Tooltip } from "@material-ui/core";
+import { Tooltip, Button } from "@material-ui/core";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { v4 as uuidv4 }from "uuid";
 import { fetchSummaryData } from "../actions/index";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 export default () => {
     const dispatch = useDispatch();
@@ -77,11 +78,21 @@ export default () => {
     
     return (
         <div>
+            <div>
+                <Alert severity="info">
+                    <AlertTitle>
+                        These are the top 50 countries with the most confirmed deaths
+                    </AlertTitle>
+                    <strong>
+                        Mouse over data points for additional details.
+                    </strong>
+                </Alert>
+            </div>
             <TransformWrapper defaultScale={1}>
             {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
                 <React.Fragment>
                     <div>
-                        <button onClick={resetTransform}>Reset Zoom</button>
+                        <Button onClick={resetTransform} variant="outlined">Reset Zoom</Button>
                     </div>
                 <TransformComponent>
                 <Svg width={window.innerWidth} height={window.innerHeight - 100}>
@@ -149,7 +160,7 @@ export default () => {
                 <Pack
                     data={{children: arrange50AllDeathsData(top50AllDeaths)}}
                     sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 100)]}
+                    size={[window.innerWidth, (window.innerHeight - 200)]}
                     includeRoot={false}
                 >
                     {nodes => nodes.map(({ x, y, r, data }) => (
@@ -158,7 +169,7 @@ export default () => {
                         <Tooltip title={
                             <Fragment>
                                 <h2>{data.country}</h2>
-                                <h2>Total confirmed deaths: {data.totaldeahs}</h2>
+                                <h2>Total confirmed deaths: {data.totaldeaths}</h2>
                                 <h2>% Global deaths: {data.value}%</h2>
                                 <h2>Date Updated: {data.dateupdated}</h2>
                             </Fragment>

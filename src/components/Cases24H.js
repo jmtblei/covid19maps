@@ -1,11 +1,12 @@
 import React, { useEffect, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Svg, Rect, Text, Circle } from "@potion/element";
-import { Treemap,Pack } from "@potion/layout";
-import { Tooltip } from "@material-ui/core";
+import { Treemap, Pack } from "@potion/layout";
+import { Tooltip, Button } from "@material-ui/core";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { v4 as uuidv4 }from "uuid";
 import { fetchSummaryData } from "../actions/index";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 export default () => {
     const dispatch = useDispatch();
@@ -77,118 +78,142 @@ export default () => {
     
     return (
         <div>
-            <TransformWrapper defaultScale={1}>
-            {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-                <React.Fragment>
-                    <div>
-                        <button onClick={resetTransform}>Reset Zoom</button>
-                    </div>
-                <TransformComponent>
-                <Svg width={window.innerWidth} height={window.innerHeight - 100}>
-                {/* REPLACING TREEMAP/RECT WITH PACK/CIRCLES*/}
-                {/* <Treemap
-                    data={{children: arrange50NewCasesData(top50NewCases)}}
-                    sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 100)]}
-                >
-                    {nodes => nodes.map(({ key, x0, y0, x1, y1, data }) => (
-                    <>
-                        {colorCode(data)}
-                        {fontResize(x0, x1, y0, y1)}
-                        <Tooltip title={
-                            <Fragment>
-                                <h2>{data.country}</h2>
-                                <h2>New confirmed cases: {data.newcases}</h2>
-                                <h2>% Global new cases: {data.value}%</h2>
-                                <h2>Date Updated: {data.dateupdated}</h2>
-                            </Fragment>
-                        }>
-                            <Rect
-                                key={key}
-                                x={x0}
-                                y={y0}
-                                width={x1 - x0}
-                                height={y1 - y0}
-                                fill={colorChange}
-                                stroke='#01579b'
-                            />
-                        </Tooltip>
-                            <Text
-                                x={x0 + (x1 - x0) * .3}
-                                y={y0 + (y1 - y0) / 2}
-                                fontSize={borderMatch}
-                                color="black"
-                            >
-                                <tspan>
-                                    {data.countrycode}
-                                </tspan>
-                            </Text>
-                            <Text
-                                x={x0 + (x1 - x0) * .3}
-                                y={y0 + (y1 - y0) / 2}      
-                                fontSize={borderMatch}
-                                color="black"
-                            >
-                                <tspan dy={borderMatch}>
-                                    +{data.newcases}
-                                </tspan>   
-                            </Text>
-                            <Text
-                                x={x0 + (x1 - x0) * .3}
-                                y={y0 + (y1 - y0) / 2}
-                                fontSize={borderMatch}
-                                color="black"
-                            >
-                                <tspan dy={2 * Number(borderMatch)}>
-                                    {data.value}%
-                                </tspan>
-                            </Text>
-                     </>
-                    ))}
-                </Treemap> */}
-                <Pack
-                    data={{children: arrange50NewCasesData(top50NewCases)}}
-                    sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 100)]}
-                    includeRoot={false}
-                >
-                    {nodes => nodes.map(({ x, y, r, data }) => (
-                    <>
-                        {colorCode(data)}
-                        <Tooltip title={
-                            <Fragment>
-                                <h2>{data.country}</h2>
-                                <h2>New confirmed cases: {data.newcases}</h2>
-                                <h2>% Global new cases: {data.value}%</h2>
-                                <h2>Date Updated: {data.dateupdated}</h2>
-                            </Fragment>
-                        }>
-                            <Circle
-                                key={data.id}
-                                cx={x}
-                                cy={y}
-                                r={r}
-                                fill={colorChange}
-                                stroke='#01579b'
-                            />
-                        </Tooltip>
-                            <Text
-                                x={x*.99}
-                                y={y}
-                                stroke="black"
-                            >
-                                <tspan>
-                                    {data.countrycode}
-                                </tspan>
-                            </Text>
-                     </>
-                    ))}
-                </Pack>
-                </Svg>
-                </TransformComponent>
-                </React.Fragment>
-            )}
-            </TransformWrapper>
+            {
+            top50NewCases.length == 0 ?
+            <div>
+                <Alert severity="info">
+                    <AlertTitle>Info</AlertTitle>
+                    <strong>
+                        The database as reported no new confirmed cases.
+                    </strong>
+                </Alert>
+            </div>
+            :
+            <div>
+                <div>
+                <Alert severity="info">
+                    <AlertTitle>
+                        These are the top 50 countries with the most confirmed cases reported in the last 24 hours
+                    </AlertTitle>
+                    <strong>
+                        Mouse over data points for additional details.
+                    </strong>
+                </Alert>
+                </div>
+                <TransformWrapper defaultScale={1}>
+                {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                    <React.Fragment>
+                        <div>
+                            <Button onClick={resetTransform} variant="outlined">Reset Zoom</Button>
+                        </div>
+                    <TransformComponent>
+                    <Svg width={window.innerWidth} height={window.innerHeight - 100}>
+                    {/* REPLACING TREEMAP/RECT WITH PACK/CIRCLES*/}
+                    {/* <Treemap
+                        data={{children: arrange50NewCasesData(top50NewCases)}}
+                        sum={datum => datum.value}
+                        size={[window.innerWidth, (window.innerHeight - 100)]}
+                    >
+                        {nodes => nodes.map(({ key, x0, y0, x1, y1, data }) => (
+                        <>
+                            {colorCode(data)}
+                            {fontResize(x0, x1, y0, y1)}
+                            <Tooltip title={
+                                <Fragment>
+                                    <h2>{data.country}</h2>
+                                    <h2>New confirmed cases: {data.newcases}</h2>
+                                    <h2>% Global new cases: {data.value}%</h2>
+                                    <h2>Date Updated: {data.dateupdated}</h2>
+                                </Fragment>
+                            }>
+                                <Rect
+                                    key={key}
+                                    x={x0}
+                                    y={y0}
+                                    width={x1 - x0}
+                                    height={y1 - y0}
+                                    fill={colorChange}
+                                    stroke='#01579b'
+                                />
+                            </Tooltip>
+                                <Text
+                                    x={x0 + (x1 - x0) * .3}
+                                    y={y0 + (y1 - y0) / 2}
+                                    fontSize={borderMatch}
+                                    color="black"
+                                >
+                                    <tspan>
+                                        {data.countrycode}
+                                    </tspan>
+                                </Text>
+                                <Text
+                                    x={x0 + (x1 - x0) * .3}
+                                    y={y0 + (y1 - y0) / 2}      
+                                    fontSize={borderMatch}
+                                    color="black"
+                                >
+                                    <tspan dy={borderMatch}>
+                                        +{data.newcases}
+                                    </tspan>   
+                                </Text>
+                                <Text
+                                    x={x0 + (x1 - x0) * .3}
+                                    y={y0 + (y1 - y0) / 2}
+                                    fontSize={borderMatch}
+                                    color="black"
+                                >
+                                    <tspan dy={2 * Number(borderMatch)}>
+                                        {data.value}%
+                                    </tspan>
+                                </Text>
+                        </>
+                        ))}
+                    </Treemap> */}
+                    <Pack
+                        data={{children: arrange50NewCasesData(top50NewCases)}}
+                        sum={datum => datum.value}
+                        size={[window.innerWidth, (window.innerHeight - 200)]}
+                        includeRoot={false}
+                    >
+                        {nodes => nodes.map(({ x, y, r, data }) => (
+                        <>
+                            {colorCode(data)}
+                            <Tooltip title={
+                                <Fragment>
+                                    <h2>{data.country}</h2>
+                                    <h2>New confirmed cases: {data.newcases}</h2>
+                                    <h2>% Global new cases: {data.value}%</h2>
+                                    <h2>Date Updated: {data.dateupdated}</h2>
+                                </Fragment>
+                            }>
+                                <Circle
+                                    key={data.id}
+                                    cx={x}
+                                    cy={y}
+                                    r={r}
+                                    fill={colorChange}
+                                    stroke='#01579b'
+                                />
+                            </Tooltip>
+                                <Text
+                                    x={x*.99}
+                                    y={y}
+                                    stroke="black"
+                                >
+                                    <tspan>
+                                        {data.countrycode}
+                                    </tspan>
+                                </Text>
+                        </>
+                        ))}
+                    </Pack>
+                    </Svg>
+                    </TransformComponent>
+                    </React.Fragment>
+                )}
+                </TransformWrapper>
+            </div>    
+            }
         </div>
     );
 }
