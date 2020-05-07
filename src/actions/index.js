@@ -10,7 +10,6 @@ export const fetchSummaryData = () => dispatch => {
         .get("https://api.covid19api.com/summary")
         .then(res => {
                 dispatch({ type: FETCH_DATA_SUCCESS, payload: res.data })
-                console.log("this is the fetched data", res.data) 
             }
         )
         .catch(err => dispatch({ type: FETCH_DATA_FAIL, payload: err }))

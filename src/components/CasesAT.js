@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { useSelector } from "react-redux";
-import { Svg, Rect, Text, Circle } from "@potion/element";
-import { Treemap, Pack } from "@potion/layout";
+import { Svg, Text, Circle } from "@potion/element";
+import { Pack } from "@potion/layout";
 import { 
     Tooltip, 
     Button, 
@@ -54,14 +54,7 @@ export default () => {
             }
         })
     };
-    //-------------------------- only for treemaps
-    // const fontResize = (x0, x1, y0, y1) => {
-    //     borderMatch =  x1-x0 < y1-y0 ? ((x1 - x0) / 8) : ((y1 - y0) / 8);
-    //     return borderMatch  
-    // }
-    
-    // let borderMatch;
-    //--------------------------
+    //-------------------------------------------------------------------------------------------
     let colorChange;
 
 
@@ -174,67 +167,6 @@ export default () => {
                     </div>
                 <TransformComponent>
                 <Svg width={window.innerWidth} height={window.innerHeight - 100}>
-                {/* REPLACING TREEMAP/RECT WITH PACK/CIRCLES*/}
-                {/* <Treemap
-                    data={{children: arrange50AllCasesData(top50AllCases)}}
-                    sum={datum => datum.value}
-                    size={[window.innerWidth, (window.innerHeight - 100)]}
-                >
-                    {nodes => nodes.map(({ key, x0, y0, x1, y1, data }) => (
-                    <>
-                        {colorCode(data)}
-                        {fontResize(x0, x1, y0, y1)}
-                        <Tooltip title={
-                            <Fragment>
-                                <h2>{data.country}</h2>
-                                <h2>Total confirmed cases: {data.totalconfirmed}</h2>
-                                <h2>% Global cases: {data.value}%</h2>
-                                <h2>Date Updated: {data.dateupdated}</h2>
-                            </Fragment>
-                        }>
-                            <Rect
-                                key={data.id}
-                                x={x0}
-                                y={y0}
-                                width={x1 - x0}
-                                height={y1 - y0}
-                                fill={colorChange}
-                                stroke='#01579b'
-                            />
-                        </Tooltip>
-                            <Text
-                                x={x0 + (x1 - x0) * .3}
-                                y={y0 + (y1 - y0) / 2}
-                                fontSize={borderMatch}
-                                color="black"
-                            >
-                                <tspan>
-                                    {data.countrycode}
-                                </tspan>
-                            </Text>
-                            <Text
-                                x={x0 + (x1 - x0) * .3}
-                                y={y0 + (y1 - y0) / 2}      
-                                fontSize={borderMatch}
-                                color="black"
-                            >
-                                <tspan dy={borderMatch}>
-                                    {data.totalconfirmed}
-                                </tspan>   
-                            </Text>
-                            <Text
-                                x={x0 + (x1 - x0) * .3}
-                                y={y0 + (y1 - y0) / 2}
-                                fontSize={borderMatch}
-                                color="black"
-                            >
-                                <tspan dy={2 * Number(borderMatch)}>
-                                    {data.value}%
-                                </tspan>
-                            </Text>
-                     </>
-                    ))}
-                </Treemap> */}
                 <Pack
                     data={{children: arrange50AllCasesData(top50AllCases)}}
                     sum={datum => datum.value}
