@@ -1,8 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Link } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import { Button, Menu, MenuItem, IconButton, Grid } from "@material-ui/core";
+import { Help, Home } from "@material-ui/icons";
 
 export default function SimpleMenu() {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -16,7 +15,12 @@ export default function SimpleMenu() {
     };
   
     return (
-      <div>
+      <Grid
+        container
+        direction="row"
+        justify="space-between"
+        alignItems="center"
+      >
         <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
           Filter by view
         </Button>
@@ -40,7 +44,15 @@ export default function SimpleMenu() {
                 <MenuItem onClick={handleClose}>Confirmed Deaths (All Time)</MenuItem>
             </Link>
         </Menu>
-      </div>
+        <div>
+            <IconButton color="primary" aria-label="home" component={Link} to="/">
+                <Home />
+            </IconButton>
+            <IconButton color="primary" aria-label="about" component={Link} to="/about">
+                <Help />
+            </IconButton>
+        </div>
+      </Grid>
     );
 }
   
