@@ -1,5 +1,5 @@
-import React, { useEffect, Fragment } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { Fragment } from "react";
+import { useSelector } from "react-redux";
 import { Svg, Text, Circle } from "@potion/element";
 import { Pack } from "@potion/layout";
 import { 
@@ -22,18 +22,10 @@ import {
 } from "@material-ui/core";
 import { Close, TableChart } from "@material-ui/icons";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-// import { v4 as uuidv4 }from "uuid";
-import { fetchSummaryData } from "../actions/index";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
 export default () => {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(fetchSummaryData())
-    }, []);
-
-    const countryData = useSelector(state => state.summaryData.Countries);
+    const countryDataYD = useSelector(state => state.countryDataYD);
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString() + " " + new Date(date).toLocaleTimeString();
@@ -44,25 +36,25 @@ export default () => {
     };
 
     //TOP 50 COUNTRIES BY NEW CONFIRMED CASES (24H) ---------------------------------------------
-    const top50NewCases = countryData
-        .filter(data => data.NewConfirmed > 0)
-        .sort((a, b) => b.NewConfirmed - a.NewConfirmed).slice(0, 50)
-    //     // .map((a, index) => ({...a, id: uuidv4(index)}));
+    const top50NewCases = countryDataYD
+        .filter(data => data.todayCases > 0)
+        .sort((a, b) => b.todayCases - a.todayCases).slice(0, 50)
     // console.log("new confirmed cases", top50NewCases);
 
     const arrange50NewCasesData = (data) => {
-        let globalChange = data.reduce((a, c) => a + c.NewConfirmed, 0);
+        let globalChange = data.reduce((a, c) => a + c.todayCases, 0);
         return data.map(datum => {
             return {
-                key: datum.id,
-                value: percentageChange(datum.NewConfirmed, globalChange),
-                country: datum.Country,
-                countrycode: datum.CountryCode,
-                dateupdated: formatDate(datum.Date),
-                totalconfirmed: datum.TotalConfirmed,
-                totaldeaths: datum.TotalDeaths,
-                newcases: datum.NewConfirmed,
-                newdeaths: datum.NewDeaths
+                key: datum.countryInfo._id,
+                value: percentageChange(datum.todayCases, globalChange),
+                country: datum.country,
+                countrycode: datum.countryInfo.iso2,
+                countryflag: datum.countryInfo.flag,
+                dateupdated: formatDate(datum.updated),
+                totalconfirmed: datum.cases,
+                totaldeaths: datum.deaths,
+                newcases: datum.todayCases,
+                newdeaths: datum.todayDeaths
             }
         })
     };
@@ -145,7 +137,7 @@ export default () => {
                                         </TableRow>
                                     </TableHead>
                                         <TableBody>
-                                            {arrange50NewCasesData(countryData.filter(x => x.NewConfirmed === 0)).map((data, index) => {
+                                            {arrange50NewCasesData(countryDataYD.filter(x => x.NewConfirmed === 0)).map((data, index) => {
                                                 return (
                                                     <>
                                                         <TableRow key={index}>
@@ -263,7 +255,7 @@ export default () => {
                                     size={[window.innerWidth, (window.innerHeight - 200)]}
                                     includeRoot={false}
                                 >
-                                    {nodes => nodes.map(({ x, y, r, data }) => (
+                                    {nodes => nodes.map(({ x, y, r, data, key }) => (
                                     <>
                                         {colorCode(data)}
                                         <Tooltip title={
@@ -272,10 +264,11 @@ export default () => {
                                                 <h2>New confirmed cases: {data.newcases}</h2>
                                                 <h2>% Global new cases: {data.value}%</h2>
                                                 <h2>Date Updated: {data.dateupdated}</h2>
+                                                <img src={data.countryflag}/>
                                             </Fragment>
                                         }>
                                             <Circle
-                                                key={data.id}
+                                                key={data.key}
                                                 cx={x}
                                                 cy={y}
                                                 r={r}

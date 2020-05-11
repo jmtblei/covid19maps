@@ -1,5 +1,5 @@
-import React, { useEffect, Fragment } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { Fragment } from "react";
+import { useSelector } from "react-redux";
 import { Svg, Text, Circle } from "@potion/element";
 import { Pack } from "@potion/layout";
 import { 
@@ -22,18 +22,10 @@ import {
 } from "@material-ui/core";
 import { Close, TableChart } from "@material-ui/icons";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-// import { v4 as uuidv4 }from "uuid";
-import { fetchSummaryData } from "../actions/index";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
 export default () => {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(fetchSummaryData())
-    }, []);
-
-    const countryData = useSelector(state => state.summaryData.Countries);
+    const countryDataYD = useSelector(state => state.countryDataYD);
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString() + " " + new Date(date).toLocaleTimeString();
@@ -44,25 +36,25 @@ export default () => {
     };
 
     //TOP 50 COUNTRIES BY NEW CONFIRMED DEATHS (24H)---------------------------------------------
-    const top50NewDeaths = countryData
-        .filter(data => data.NewDeaths > 0)
-        .sort((a, b) => b.NewDeaths - a.NewDeaths).slice(0, 50)
-        // .map((a, index) => ({...a, id: uuidv4(index)}));
+    const top50NewDeaths = countryDataYD
+        .filter(data => data.todayDeaths > 0)
+        .sort((a, b) => b.todayDeaths - a.todayDeaths).slice(0, 50)
     // console.log("new confirmed deaths", top50NewDeaths);
 
     const arrange50NewDeathsData = (data) => {
-        let globalChange = data.reduce((a, c) => a + c.NewDeaths, 0);
+        let globalChange = data.reduce((a, c) => a + c.todayDeaths, 0);
         return data.map(datum => {
             return {
-                key: datum.id,
-                value: percentageChange(datum.NewDeaths, globalChange),
-                country: datum.Country,
-                countrycode: datum.CountryCode,
-                dateupdated: formatDate(datum.Date),
-                totalconfirmed: datum.TotalConfirmed,
-                totaldeaths: datum.TotalDeaths,
-                newcases: datum.NewConfirmed,
-                newdeaths: datum.NewDeaths
+                key: datum.countryInfo._id,
+                value: percentageChange(datum.todayDeaths, globalChange),
+                country: datum.country,
+                countrycode: datum.countryInfo.iso2,
+                countryflag: datum.countryInfo.flag,
+                dateupdated: formatDate(datum.updated),
+                totalconfirmed: datum.cases,
+                totaldeaths: datum.deaths,
+                newcases: datum.todayCases,
+                newdeaths: datum.todayDeaths
             }
         })
     };
@@ -145,7 +137,7 @@ export default () => {
                                     </TableRow>
                                 </TableHead>
                                     <TableBody>
-                                        {arrange50NewDeathsData(countryData.filter(x => x.NewConfirmed === 0)).map((data, index) => {
+                                        {arrange50NewDeathsData(countryDataYD.filter(x => x.NewConfirmed === 0)).map((data, index) => {
                                             return (
                                                 <>
                                                     <TableRow key={index}>
@@ -272,6 +264,7 @@ export default () => {
                                                 <h2>New confirmed deaths: {data.newdeaths}</h2>
                                                 <h2>% Global new deaths: {data.value}%</h2>
                                                 <h2>Date Updated: {data.dateupdated}</h2>
+                                                <img src={data.countryflag}/>
                                             </Fragment>
                                         }>
                                             <Circle

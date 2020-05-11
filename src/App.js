@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 
-import { fetchSummaryData } from "./actions/index";
+import { fetchNovelDataCountry, fetchNovelDataCountryYD } from "./actions/index";
 import TopNav from "./components/TopNav";
 import CasesAT from "./components/CasesAT";
 import Cases24H from "./components/Cases24H";
@@ -14,9 +14,14 @@ import { CircularProgress, Grid } from "@material-ui/core";
 function App() {
   const dispatch = useDispatch();
   const isFetched = useSelector(state => state.isFetched);
+  const isFetched2 = useSelector(state => state.isFetched2)
 
   useEffect(() => {
-    dispatch(fetchSummaryData())
+    dispatch(fetchNovelDataCountry())
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchNovelDataCountryYD())
   }, []);
 
   return (
@@ -32,9 +37,9 @@ function App() {
           >
             <CircularProgress />
           </Grid> : 
-          <CasesAT />} 
-        />
-        <Route exact path="/confirmed-24h" render={() => !isFetched ? 
+            <CasesAT />} 
+          />
+        <Route exact path="/confirmed-24h" render={() => !isFetched2 ? 
           <Grid 
             container
             direction="row"
@@ -43,9 +48,9 @@ function App() {
           >
             <CircularProgress />
           </Grid> : 
-          <Cases24H />} 
-        />
-        <Route exact path="/deaths-24h" render={() => !isFetched ? 
+            <Cases24H />} 
+          />
+        <Route exact path="/deaths-24h" render={() => !isFetched2 ? 
           <Grid 
             container
             direction="row"
@@ -54,8 +59,8 @@ function App() {
           >
             <CircularProgress />
           </Grid> : 
-          <Deaths24H />}
-         />
+            <Deaths24H />}
+          />
         <Route exact path="/deaths-all-time" render={() => !isFetched ? 
           <Grid 
             container
@@ -65,8 +70,8 @@ function App() {
           >
             <CircularProgress />
           </Grid> : 
-          <DeathsAT />} 
-        />
+            <DeathsAT />} 
+          />
           <Route exact path="/about" render={() => <About />} />
       </Switch>
     </div>

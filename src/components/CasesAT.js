@@ -22,16 +22,14 @@ import {
 } from "@material-ui/core";
 import { Close, TableChart } from "@material-ui/icons";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-// import { v4 as uuidv4 }from "uuid";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
 export default () => {
-    const countryData = useSelector(state => state.summaryData.Countries);
+    const countryData = useSelector(state => state.countryData);
 
     const top50AllCases = countryData
-        .filter(data => data.TotalConfirmed > 0)
-        .sort((a, b) => b.TotalConfirmed - a.TotalConfirmed).slice(0, 50)
-        // .map((a, index) => ({...a, id: uuidv4(index)}));
+        .filter(data => data.cases > 0)
+        .sort((a, b) => b.cases - a.cases).slice(0, 50)
     // console.log("all confirmed cases", top50AllCases);
 
     const percentageChange = (countryChange, globalChange) => {
@@ -43,18 +41,19 @@ export default () => {
     }
     
     const arrange50AllCasesData = (data) => {
-        let globalChange = data.reduce((a, c) => a + c.TotalConfirmed, 0);
+        let globalChange = data.reduce((a, c) => a + c.cases, 0);
         return data.map(datum => {
             return {
-                key: datum.id,
-                value: percentageChange(datum.TotalConfirmed, globalChange),
-                country: datum.Country,
-                countrycode: datum.CountryCode,
-                dateupdated: formatDate(datum.Date),
-                totalconfirmed: datum.TotalConfirmed,
-                totaldeaths: datum.TotalDeaths,
-                newcases: datum.TotalConfirmed,
-                newdeaths: datum.NewDeaths
+                key: datum.countryInfo._id,
+                value: percentageChange(datum.cases, globalChange),
+                country: datum.country,
+                countrycode: datum.countryInfo.iso2,
+                countryflag: datum.countryInfo.flag,
+                dateupdated: formatDate(datum.updated),
+                totalconfirmed: datum.cases,
+                totaldeaths: datum.deaths,
+                newcases: datum.todayCases,
+                newdeaths: datum.todayDeaths
             }
         })
     };
@@ -186,14 +185,14 @@ export default () => {
                         <Button onClick={resetTransform} variant="outlined">Reset Zoom</Button>
                     </Grid>
                     <TransformComponent>
-                        <Svg width={window.innerWidth} height={window.innerHeight - 100}>
+                        <Svg width={window.innerWidth - 400} height={window.innerHeight - 100}>
                             <Pack
                                 data={{children: arrange50AllCasesData(top50AllCases)}}
                                 sum={datum => datum.value}
-                                size={[window.innerWidth, (window.innerHeight - 200)]}
+                                size={[window.innerWidth - 500, (window.innerHeight - 200)]}
                                 includeRoot={false}
                             >
-                                {nodes => nodes.map(({ x, y, r, data }) => (
+                                {nodes => nodes.map(({ x, y, r, data, key }) => (
                                 <>
                                     {colorCode(data)}
                                     <Tooltip title={
@@ -202,10 +201,11 @@ export default () => {
                                             <h2>Total confirmed cases: {data.totalconfirmed}</h2>
                                             <h2>% Global cases: {data.value}%</h2>
                                             <h2>Date Updated: {data.dateupdated}</h2>
+                                            <img src={data.countryflag}/>
                                         </Fragment>
                                     }>
                                         <Circle
-                                            key={data.id}
+                                            key={data.key}
                                             cx={x}
                                             cy={y}
                                             r={r}

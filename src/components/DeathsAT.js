@@ -1,5 +1,5 @@
-import React, { useEffect, Fragment } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { Fragment } from "react";
+import { useSelector } from "react-redux";
 import { Svg, Text, Circle } from "@potion/element";
 import { Pack } from "@potion/layout";
 import { 
@@ -22,18 +22,10 @@ import {
 } from "@material-ui/core";
 import { Close, TableChart } from "@material-ui/icons";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-// import { v4 as uuidv4 }from "uuid";
-import { fetchSummaryData } from "../actions/index";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
 export default () => {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(fetchSummaryData())
-    }, []);
-
-    const countryData = useSelector(state => state.summaryData.Countries);
+    const countryData = useSelector(state => state.countryData);
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString() + " " + new Date(date).toLocaleTimeString();
@@ -45,24 +37,24 @@ export default () => {
 
     //TOP 50 COUNTRIES BY CONFIRMED DEATHS (All Time)---------------------------------------------
     const top50AllDeaths = countryData
-        .filter(data => data.TotalDeaths > 0)
-        .sort((a, b) => b.TotalDeaths - a.TotalDeaths).slice(0, 50)
-        // .map((a, index) => ({...a, id: uuidv4(index)}));
+        .filter(data => data.deaths > 0)
+        .sort((a, b) => b.deaths - a.deaths).slice(0, 50)
     // console.log("all-time confirmed deaths", top50AllDeaths);
 
     const arrange50AllDeathsData = (data) => {
-        let globalChange = data.reduce((a, c) => a + c.TotalDeaths, 0);
+        let globalChange = data.reduce((a, c) => a + c.deaths, 0);
         return data.map(datum => {
             return {
-                key: datum.id,
-                value: percentageChange(datum.TotalDeaths, globalChange),
-                country: datum.Country,
-                countrycode: datum.CountryCode,
-                dateupdated: formatDate(datum.Date),
-                totalconfirmed: datum.TotalConfirmed,
-                totaldeaths: datum.TotalDeaths,
-                newcases: datum.NewConfirmed,
-                newdeaths: datum.NewDeaths
+                key: datum.countryInfo._id,
+                value: percentageChange(datum.deaths, globalChange),
+                country: datum.country,
+                countrycode: datum.countryInfo.iso2,
+                countryflag: datum.countryInfo.flag,
+                dateupdated: formatDate(datum.updated),
+                totalconfirmed: datum.cases,
+                totaldeaths: datum.deaths,
+                newcases: datum.todayCases,
+                newdeaths: datum.todayDeaths
             }
         })
     };
@@ -202,7 +194,7 @@ export default () => {
                                 size={[window.innerWidth, (window.innerHeight - 200)]}
                                 includeRoot={false}
                             >
-                                {nodes => nodes.map(({ x, y, r, data }) => (
+                                {nodes => nodes.map(({ x, y, r, data, key }) => (
                                 <>
                                     {colorCode(data)}
                                     <Tooltip title={
@@ -211,10 +203,11 @@ export default () => {
                                             <h2>Total confirmed deaths: {data.totaldeaths}</h2>
                                             <h2>% Global deaths: {data.value}%</h2>
                                             <h2>Date Updated: {data.dateupdated}</h2>
+                                            <img src={data.countryflag}/>
                                         </Fragment>
                                     }>
                                         <Circle
-                                            key={data.id}
+                                            key={data.key}
                                             cx={x}
                                             cy={y}
                                             r={r}
