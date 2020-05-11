@@ -20,7 +20,7 @@ import {
     IconButton,
     Grid,
 } from "@material-ui/core";
-import { Close, TableChart } from "@material-ui/icons";
+import { Close, TableChart, Refresh } from "@material-ui/icons";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
@@ -63,13 +63,13 @@ export default () => {
 
     const colorCode = (data) => {
         colorChange = data.totaldeaths === 0 ? "#DEF5FF" 
-        : data.value <= .1 ? "#36BB35" 
-        : data.value <= .5 ? "#00FF00"
+        : data.value <= .1 ? "#FFFFFF" 
+        : data.value <= .5 ? "#D0D0D0"
         : data.value <= 1 ? "#FFFF00"
         : data.value <= 2 ? "#F4C430"
         : data.value <= 5 ? "#FFA000"
         : data.value <= 7.5 ? "#FF681F"
-        : data.value <= 10 ? "#FF0000"
+        : data.value <= 10 ? "#9B2D01"
         : "#860111";
         return (
             colorChange
@@ -137,6 +137,7 @@ export default () => {
                         justify="space-between"
                         alignItems="center"
                     >
+                        <Button onClick={resetTransform} endIcon={<Refresh />} variant="contained" color="primary">Reset Zoom</Button>
                         <Button onClick={handleClickOpen('paper')} endIcon={<TableChart />} variant="contained" color="primary">Show raw data</Button>
                         <Dialog
                             open={open}
@@ -184,51 +185,53 @@ export default () => {
                                 </Button>
                             </DialogActions>
                         </Dialog>
-                        <Button onClick={resetTransform} variant="outlined">Reset Zoom</Button>
                     </Grid>
-                    <TransformComponent>
-                        <Svg width={window.innerWidth} height={window.innerHeight - 100}>
-                            <Pack
-                                data={{children: arrange50AllDeathsData(top50AllDeaths)}}
-                                sum={datum => datum.value}
-                                size={[window.innerWidth, (window.innerHeight - 200)]}
-                                includeRoot={false}
-                            >
-                                {nodes => nodes.map(({ x, y, r, data, key }) => (
-                                <>
-                                    {colorCode(data)}
-                                    <Tooltip title={
-                                        <Fragment>
-                                            <h2>{data.country}</h2>
-                                            <h2>Total confirmed deaths: {data.totaldeaths}</h2>
-                                            <h2>% Global deaths: {data.value}%</h2>
-                                            <h2>Date Updated: {data.dateupdated}</h2>
-                                            <img src={data.countryflag}/>
-                                        </Fragment>
-                                    }>
-                                        <Circle
-                                            key={data.key}
-                                            cx={x}
-                                            cy={y}
-                                            r={r}
-                                            fill={colorChange}
-                                            stroke='#01579b'
-                                        />
-                                    </Tooltip>
-                                        <Text
-                                            x={x*.99}
-                                            y={y}
-                                            stroke="black"
-                                        >
-                                            <tspan>
-                                                {data.countrycode}
-                                            </tspan>
-                                        </Text>
-                                </>
-                                ))}
-                            </Pack>
-                        </Svg>
-                    </TransformComponent>
+                    <div className="svg">    
+                        <TransformComponent>
+                            <Svg width={window.innerWidth * .5} height={window.innerHeight * .9}>
+                                <Pack
+                                    data={{children: arrange50AllDeathsData(top50AllDeaths)}}
+                                    sum={datum => datum.value}
+                                    size={[window.innerWidth * .5, (window.innerHeight * .85)]}
+                                    includeRoot={false}
+                                    padding={5}
+                                >
+                                    {nodes => nodes.map(({ x, y, r, data, key }) => (
+                                    <>
+                                        {colorCode(data)}
+                                        <Tooltip title={
+                                            <Fragment>
+                                                <h2>{data.country}</h2>
+                                                <h2>Total confirmed deaths: {data.totaldeaths}</h2>
+                                                <h2>% Global deaths: {data.value}%</h2>
+                                                <h2>Date Updated: {data.dateupdated}</h2>
+                                                <img src={data.countryflag}/>
+                                            </Fragment>
+                                        }>
+                                            <Circle
+                                                key={data.key}
+                                                cx={x}
+                                                cy={y}
+                                                r={r}
+                                                fill={colorChange}
+                                                stroke='#404040'
+                                            />
+                                        </Tooltip>
+                                            <Text
+                                                x={x}
+                                                y={y}
+                                                stroke="black"
+                                            >
+                                                <tspan textAnchor="middle" alignment-baseline="central">
+                                                    {data.countrycode}
+                                                </tspan>
+                                            </Text>
+                                    </>
+                                    ))}
+                                </Pack>
+                            </Svg>
+                        </TransformComponent>
+                    </div>
                 </React.Fragment>
             )}
             </TransformWrapper>

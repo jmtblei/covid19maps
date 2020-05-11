@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-
+import "./App.css"
 import { fetchNovelDataCountry, fetchNovelDataCountryYD } from "./actions/index";
 import TopNav from "./components/TopNav";
 import CasesAT from "./components/CasesAT";
