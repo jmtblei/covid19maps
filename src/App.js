@@ -25,7 +25,7 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div className="App">
       <TopNav />
       <Switch>
         <Route exact path="/" render={() => !isFetched ? 
@@ -35,7 +35,7 @@ function App() {
             justify="center"
             alignItems="center"
           >
-            <CircularProgress />
+            <CircularProgress color="secondary" size="10em"/>
           </Grid> : 
             <CasesAT />} 
           />
@@ -46,7 +46,7 @@ function App() {
             justify="center"
             alignItems="center"
           >
-            <CircularProgress />
+            <CircularProgress color="secondary" size="10em"/>
           </Grid> : 
             <Cases24H />} 
           />
@@ -57,7 +57,7 @@ function App() {
             justify="center"
             alignItems="center"
           >
-            <CircularProgress />
+            <CircularProgress color="secondary" size="10em"/>
           </Grid> : 
             <Deaths24H />}
           />
@@ -68,7 +68,7 @@ function App() {
             justify="center"
             alignItems="center"
           >
-            <CircularProgress />
+            <CircularProgress color="secondary" size="10em"/>
           </Grid> : 
             <DeathsAT />} 
           />
