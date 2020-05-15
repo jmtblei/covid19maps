@@ -303,11 +303,11 @@ export default () => {
                                 <h5>&gt;= 10% cases</h5>
                             </div>
                             <TransformComponent>
-                                <Svg width={window.innerWidth} height={window.innerHeight * .85} className="svg-content">
+                                <Svg width={window.innerWidth - 50} height={window.innerHeight * .7} className="svg-content">
                                     <Pack
                                         data={{children: arrange50NewCasesData(top50NewCases)}}
                                         sum={datum => datum.value}
-                                        size={[window.innerWidth, (window.innerHeight * .8)]}
+                                        size={[window.innerWidth, (window.innerHeight * .65)]}
                                         includeRoot={false}
                                         padding={5}
                                     >

@@ -9,6 +9,7 @@ import Cases24H from "./components/Cases24H";
 import Deaths24H from "./components/Deaths24H";
 import DeathsAT from "./components/DeathsAT";
 import About from "./components/About";
+import Footer from "./components/Footer";
 import { CircularProgress, Grid } from "@material-ui/core";
 
 function App() {
@@ -74,6 +75,7 @@ function App() {
           />
           <Route exact path="/about" render={() => <About />} />
       </Switch>
+      <Footer />
     </div>
   );
 }
