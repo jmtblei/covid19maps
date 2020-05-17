@@ -19,7 +19,7 @@ export default function SimpleMenu() {
                 endIcon={<Home />}
                 component={Link} to="/"
               >
-                COVIDMAPS
+                COVID19MAPS
               </Button>
               <Button 
                 color="primary" 
