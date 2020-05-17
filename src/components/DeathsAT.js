@@ -274,12 +274,20 @@ export default () => {
                                             <Text
                                                 x={x}
                                                 y={y}
-                                                stroke="black"
+                                                font-size={r*.5}
                                             >
-                                                <tspan textAnchor="middle" alignment-baseline="central">
+                                                <tspan textAnchor="middle" dominant-baseline="after-edge">
                                                     {data.countrycode}
                                                 </tspan>
                                             </Text>
+                                            <image
+                                                x={x}
+                                                y={y}
+                                                width={r*.7}
+                                                height={r*.7}
+                                                href={data.countryflag}
+                                            >
+                                            </image>
                                     </>
                                     ))}
                                 </Pack>

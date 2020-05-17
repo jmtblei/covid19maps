@@ -148,7 +148,8 @@ body {
 }
 
 .footer-text-container {
-  width: 70%
+  width: 70%;
+  font-size: .8em;
 }
 
 a:link.icon-link, a:visited.icon-link {

@@ -36,7 +36,7 @@ function App() {
             justify="center"
             alignItems="center"
           >
-            <CircularProgress color="secondary" size="10em"/>
+            <CircularProgress color="primary" size="10em"/>
           </Grid> : 
             <CasesAT />} 
           />
@@ -47,7 +47,7 @@ function App() {
             justify="center"
             alignItems="center"
           >
-            <CircularProgress color="secondary" size="10em"/>
+            <CircularProgress color="primary" size="10em"/>
           </Grid> : 
             <Cases24H />} 
           />
@@ -58,7 +58,7 @@ function App() {
             justify="center"
             alignItems="center"
           >
-            <CircularProgress color="secondary" size="10em"/>
+            <CircularProgress color="primary" size="10em"/>
           </Grid> : 
             <Deaths24H />}
           />
@@ -69,7 +69,7 @@ function App() {
             justify="center"
             alignItems="center"
           >
-            <CircularProgress color="secondary" size="10em"/>
+            <CircularProgress color="primary" size="10em"/>
           </Grid> : 
             <DeathsAT />} 
           />
