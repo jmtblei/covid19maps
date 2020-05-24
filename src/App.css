@@ -23,16 +23,30 @@ body {
   margin-top: 10px
 }
 
-.colorbar {
-  margin-top: 10px;
+.form-selection {
+  display: inline-block;
+  margin-left: 1rem;
 }
 
-.colorscale {
+.selection-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+}
+
+#choose-region {
+  border-radius: 1rem;
+  background-color: #2976C2;
+  border: 1px solid #2976C2;
   color: white;
-  padding: 0 5%;
+  outline: none;
+  padding: 5px
+}
+
+.transform-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding-top: 10px
 }
 
 .about-container {
