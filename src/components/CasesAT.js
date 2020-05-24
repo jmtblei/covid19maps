@@ -90,9 +90,7 @@ export default () => {
     // console.log("continentData", continentData)
 
     const continentChildren = Array.from(covidContinents, ([key, value, children]) => ({key, value: value.reduce((a, c) => a + c.totalconfirmed, 0), children: value}));
-    console.log("continentChildren", continentChildren)
     const NorthAmericaData = continentChildren.filter(n => n.key === "North America");
-    console.log("NA", NorthAmericaData)
     const SouthAmericaData = continentChildren.filter(n => n.key === "South America");
     const EuropeData = continentChildren.filter(n => n.key === "Europe");
     const AsiaData = continentChildren.filter(n => n.key === "Asia");
@@ -133,6 +131,7 @@ export default () => {
           <div className="legend" style={{color:"white"}}>
             <div className="title">{title}</div>
             {children}
+            <div>Updated: {arrangeAllData(countriesByCases)[0].dateupdated}</div>
           </div>
         );
     }      
