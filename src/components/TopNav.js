@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Link } from "react-router-dom";
-import { Button, Grid, Menu, MenuItem } from "@material-ui/core";
-import { Help, Home, FilterList } from "@material-ui/icons";
+import { Button, Grid, Menu, MenuItem, AppBar, Toolbar, Typography } from "@material-ui/core";
+import { Help, FilterList } from "@material-ui/icons";
 
 export default function SimpleMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -16,27 +16,20 @@ export default function SimpleMenu() {
   
     return (
       <div className="navm">
-        <Grid
-          container
-          direction="row"
-          justify="space-between"
-          alignItems="center"
-        >
-              {/* <Button 
-                color="primary" 
-                variant="contained" 
-                endIcon={<Home />}
-                component={Link} to="/"
-              >
-                COVID19MAPS
-              </Button> */}
+        <AppBar position="static">
+          <Toolbar>
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+            >
               <Button 
                 aria-controls="simple-menu" 
                 aria-haspopup="true" 
                 onClick={toggleClick}
-                endIcon={<FilterList />} 
-                variant="contained" 
-                color="primary"
+                endIcon={<FilterList />}
+                style={{color:"white"}}
               >
                 Filter by view
               </Button>
@@ -52,15 +45,15 @@ export default function SimpleMenu() {
                 <MenuItem onClick={toggleClose} component={Link} to="/deaths-24h">Confirmed Deaths (24H)</MenuItem>
                 <MenuItem onClick={toggleClose} component={Link} to="/deaths-all-time">Confirmed Deaths (All Time)</MenuItem>
               </Menu>
+              <Typography variant="h6">COVID-19 MAPS</Typography>
               <Button 
-                color="primary" 
-                variant="contained" 
-                endIcon={<Help />} 
                 component={Link} to="/about"
               >
-                About
+                <Help style={{color:"white"}}/>
               </Button>
-        </Grid>
+            </Grid>
+          </Toolbar>
+        </AppBar>
       </div>
     );
 }
