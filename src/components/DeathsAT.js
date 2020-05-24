@@ -20,7 +20,7 @@ import {
     IconButton,
     Grid,
 } from "@material-ui/core";
-import { Close, TableChart, Refresh } from "@material-ui/icons";
+import { Close, TableChart, Refresh, Visibility, VisibilityOff, Info } from "@material-ui/icons";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import * as d3 from "d3";
@@ -70,11 +70,11 @@ export default () => {
     };
 
     const arrangeRegionData = (data) => {
-        let regionChange = data.reduce((a, c) => a + c.totalconfirmed, 0);
+        let regionChange = data.reduce((a, c) => a + c.totaldeaths, 0);
         return data.map(datum => {
             return {
                 ...datum,
-                regionpercent: contChange(datum.totalconfirmed, regionChange)
+                regionpercent: contChange(datum.totaldeaths, regionChange)
             }
         })
     };
@@ -84,12 +84,12 @@ export default () => {
 
     const continentData = Array.from(covidContinents, ([key, value, globalvalue]) => ({
             key, 
-            value: value.reduce((a, c) => a + c.totalconfirmed, 0), 
+            value: value.reduce((a, c) => a + c.totaldeaths, 0), 
             globalvalue: value.reduce((a, c) => a + c.globalpercent, 0)
         })).slice(0, -1);
     // console.log("continentData", continentData)
 
-    const continentChildren = Array.from(covidContinents, ([key, value, children]) => ({key, value: value.reduce((a, c) => a + c.totalconfirmed, 0), children: value}));
+    const continentChildren = Array.from(covidContinents, ([key, value, children]) => ({key, value: value.reduce((a, c) => a + c.totaldeaths, 0), children: value}));
     const NorthAmericaData = continentChildren.filter(n => n.key === "North America");
     const SouthAmericaData = continentChildren.filter(n => n.key === "South America");
     const EuropeData = continentChildren.filter(n => n.key === "Europe");
@@ -97,7 +97,7 @@ export default () => {
     const AfricaData = continentChildren.filter(n => n.key === "Africa");
     const AusOceData = continentChildren.filter(n => n.key === "Australia/Oceania");
 
-    // const continentsum = d3Array.rollup(arrangeAllData(countriesByDeaths), v => d3.sum(v, d => d.totalconfirmed), v => v.continent, v => v.country);
+    // const continentsum = d3Array.rollup(arrangeAllData(countriesByDeaths), v => d3.sum(v, d => d.totaldeaths), v => v.continent, v => v.country);
     // const continentsum = d3Array.rollup(countryData, v => d3.sum(v, d => d.deaths), v => v.continent, v => v.country)
     // console.log("continentsum", continentsum);
 
@@ -122,6 +122,7 @@ export default () => {
     };
 
     const [toggleRegion, setToggleRegion] = React.useState(false);
+    const [toggleFlag, setToggleFlag] = React.useState(true);
     //-------------------------------------------------------------------------------------------
     let colorChange;
     let colorRegionChange;
@@ -144,7 +145,7 @@ export default () => {
     const globalChange = (data) => {
         switch (selection) {
             case "Global": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalvalue <= .1 ? "#ffffcc" 
                 : data.globalvalue <= .5 ? "#ffeda0"
                 : data.globalvalue <= 1 ? "#fed976"
@@ -158,7 +159,7 @@ export default () => {
                 )
             }
             case "North America": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalpercent <= .1 ? "#ffffcc" 
                 : data.globalpercent <= .5 ? "#ffeda0"
                 : data.globalpercent <= 1 ? "#fed976"
@@ -172,7 +173,7 @@ export default () => {
                 )
             }
             case "South America": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalpercent <= .1 ? "#ffffcc" 
                 : data.globalpercent <= .5 ? "#ffeda0"
                 : data.globalpercent <= 1 ? "#fed976"
@@ -186,7 +187,7 @@ export default () => {
                 )
             }
             case "Europe": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalpercent <= .1 ? "#ffffcc" 
                 : data.globalpercent <= .5 ? "#ffeda0"
                 : data.globalpercent <= 1 ? "#fed976"
@@ -200,7 +201,7 @@ export default () => {
                 )
             }
             case "Asia": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalpercent <= .1 ? "#ffffcc" 
                 : data.globalpercent <= .5 ? "#ffeda0"
                 : data.globalpercent <= 1 ? "#fed976"
@@ -214,7 +215,7 @@ export default () => {
                 )
             }
             case "Africa": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalpercent <= .1 ? "#ffffcc" 
                 : data.globalpercent <= .5 ? "#ffeda0"
                 : data.globalpercent <= 1 ? "#fed976"
@@ -228,7 +229,7 @@ export default () => {
                 )
             }
             case "Australia/Oceania": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalpercent <= .1 ? "#ffffcc" 
                 : data.globalpercent <= .5 ? "#ffeda0"
                 : data.globalpercent <= 1 ? "#fed976"
@@ -248,7 +249,7 @@ export default () => {
     };
 
     const regionChange = (data) => {
-        colorRegionChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+        colorRegionChange = data.totaldeaths === 0 ? "#FFFFFF" 
             : data.regionpercent <= .1 ? "#ffffcc" 
             : data.regionpercent <= .5 ? "#ffeda0"
             : data.regionpercent <= 1 ? "#fed976"
@@ -309,7 +310,16 @@ export default () => {
                                     }
                                 >
                                     <AlertTitle>
-                                        These are the number of confirmed deaths for countries in {continentName}
+                                        {
+                                            toggleRegion ? 
+                                            <>
+                                            These are the countries in {continentName} with confirmed deaths, compared globally
+                                            </>
+                                            :
+                                            <>
+                                            These are the countries in {continentName} with confirmed deaths, compared regionally
+                                            </>
+                                        }
                                     </AlertTitle>
                                     <strong>
                                         Mouse over data points for additional details.
@@ -337,9 +347,21 @@ export default () => {
                                     </select>
                                 </form>
                                 <div className="selection-container">
+                                    <Button onClick={() => {setExpand(true)}} disabled={expand} variant="contained" color="primary" style={{marginRight:"5px", color:"white"}}>
+                                        <Info/>
+                                    </Button>
                                     <Button onClick={() => setToggleRegion(!toggleRegion)} variant="contained" color="primary" style={{marginRight:"5px"}}>
                                         {toggleRegion ? "Region" : "Global"}
                                     </Button>
+                                    {   toggleFlag ?
+                                        <Button endIcon={<Visibility />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
+                                            Flags
+                                        </Button>
+                                        :
+                                        <Button endIcon={<VisibilityOff />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
+                                            Flags
+                                        </Button>
+                                    }
                                     <Button onClick={handleClickOpen('paper')} endIcon={<TableChart />} variant="contained" color="primary">Show raw data</Button>
                                 </div>
                                 <Dialog
@@ -371,7 +393,7 @@ export default () => {
                                                                         <TableCell component="th" scope="row">
                                                                             {data.country}
                                                                         </TableCell>
-                                                                        <TableCell align="right">{data.totalconfirmed}</TableCell>
+                                                                        <TableCell align="right">{data.totaldeaths}</TableCell>
                                                                         <TableCell align="right">{data.globalpercent}%</TableCell>
                                                                         <TableCell align="right">{data.regionpercent}%</TableCell>
                                                                     </TableRow>
@@ -421,23 +443,38 @@ export default () => {
                                                         stroke='#404040'
                                                     />
                                                 </Tooltip>
-                                                    <Text
-                                                        x={x}
-                                                        y={y}
-                                                        fontSize={r*.3}
-                                                    >
-                                                        <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                            {data.countrycode}
-                                                        </tspan>
-                                                    </Text>
-                                                    <image
-                                                        x={x}
-                                                        y={y}
-                                                        width={r*.7}
-                                                        height={r*.7}
-                                                        href={data.countryflag}
-                                                    >
-                                                    </image>
+                                                    {
+                                                        toggleFlag ? 
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        :
+                                                        <>
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        <image
+                                                            x={x}
+                                                            y={y}
+                                                            width={r*.7}
+                                                            height={r*.7}
+                                                            href={data.countryflag}
+                                                        >
+                                                        </image>
+                                                        </>
+                                                    }
                                             </>
                                             ))}
                                         </Pack>
@@ -469,23 +506,38 @@ export default () => {
                                                         stroke='#404040'
                                                     />
                                                 </Tooltip>
-                                                    <Text
-                                                        x={x}
-                                                        y={y}
-                                                        fontSize={r*.3}
-                                                    >
-                                                        <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                            {data.countrycode}
-                                                        </tspan>
-                                                    </Text>
-                                                    <image
-                                                        x={x}
-                                                        y={y}
-                                                        width={r*.7}
-                                                        height={r*.7}
-                                                        href={data.countryflag}
-                                                    >
-                                                    </image>
+                                                    {
+                                                        toggleFlag ? 
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        :
+                                                        <>
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        <image
+                                                            x={x}
+                                                            y={y}
+                                                            width={r*.7}
+                                                            height={r*.7}
+                                                            href={data.countryflag}
+                                                        >
+                                                        </image>
+                                                        </>
+                                                    }
                                             </>
                                             ))}
                                         </Pack>
@@ -564,7 +616,7 @@ export default () => {
                                     }
                                 >
                                     <AlertTitle>
-                                        These are the number of confirmed deaths for each continent
+                                        These are the continents with confirmed deaths
                                     </AlertTitle>
                                     <strong>
                                         Mouse over data points for additional details.

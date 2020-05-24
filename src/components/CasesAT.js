@@ -20,7 +20,7 @@ import {
     IconButton,
     Grid,
 } from "@material-ui/core";
-import { Close, TableChart, Refresh } from "@material-ui/icons";
+import { Close, TableChart, Refresh, Visibility, VisibilityOff, Info } from "@material-ui/icons";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import * as d3 from "d3";
@@ -122,6 +122,7 @@ export default () => {
     };
 
     const [toggleRegion, setToggleRegion] = React.useState(false);
+    const [toggleFlag, setToggleFlag] = React.useState(true);
     //-------------------------------------------------------------------------------------------
     let colorChange;
     let colorRegionChange;
@@ -309,7 +310,16 @@ export default () => {
                                     }
                                 >
                                     <AlertTitle>
-                                        These are the number of confirmed cases for countries in {continentName}
+                                        {
+                                            toggleRegion ? 
+                                            <>
+                                            These are the countries in {continentName} with confirmed cases, compared globally
+                                            </>
+                                            :
+                                            <>
+                                            These are the countries in {continentName} with confirmed cases, compared regionally
+                                            </>
+                                        }
                                     </AlertTitle>
                                     <strong>
                                         Mouse over data points for additional details.
@@ -337,9 +347,21 @@ export default () => {
                                     </select>
                                 </form>
                                 <div className="selection-container">
+                                    <Button onClick={() => {setExpand(true)}} disabled={expand} variant="contained" color="primary" style={{marginRight:"5px", color:"white"}}>
+                                        <Info/>
+                                    </Button>
                                     <Button onClick={() => setToggleRegion(!toggleRegion)} variant="contained" color="primary" style={{marginRight:"5px"}}>
                                         {toggleRegion ? "Region" : "Global"}
                                     </Button>
+                                    {   toggleFlag ?
+                                        <Button endIcon={<Visibility />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
+                                            Flags
+                                        </Button>
+                                        :
+                                        <Button endIcon={<VisibilityOff />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
+                                            Flags
+                                        </Button>
+                                    }
                                     <Button onClick={handleClickOpen('paper')} endIcon={<TableChart />} variant="contained" color="primary">Show raw data</Button>
                                 </div>
                                 <Dialog
@@ -421,23 +443,38 @@ export default () => {
                                                         stroke='#404040'
                                                     />
                                                 </Tooltip>
-                                                    <Text
-                                                        x={x}
-                                                        y={y}
-                                                        fontSize={r*.3}
-                                                    >
-                                                        <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                            {data.countrycode}
-                                                        </tspan>
-                                                    </Text>
-                                                    <image
-                                                        x={x}
-                                                        y={y}
-                                                        width={r*.7}
-                                                        height={r*.7}
-                                                        href={data.countryflag}
-                                                    >
-                                                    </image>
+                                                    {
+                                                        toggleFlag ? 
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        :
+                                                        <>
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        <image
+                                                            x={x}
+                                                            y={y}
+                                                            width={r*.7}
+                                                            height={r*.7}
+                                                            href={data.countryflag}
+                                                        >
+                                                        </image>
+                                                        </>
+                                                    }
                                             </>
                                             ))}
                                         </Pack>
@@ -469,23 +506,38 @@ export default () => {
                                                         stroke='#404040'
                                                     />
                                                 </Tooltip>
-                                                    <Text
-                                                        x={x}
-                                                        y={y}
-                                                        fontSize={r*.3}
-                                                    >
-                                                        <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                            {data.countrycode}
-                                                        </tspan>
-                                                    </Text>
-                                                    <image
-                                                        x={x}
-                                                        y={y}
-                                                        width={r*.7}
-                                                        height={r*.7}
-                                                        href={data.countryflag}
-                                                    >
-                                                    </image>
+                                                    {
+                                                        toggleFlag ? 
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        :
+                                                        <>
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        <image
+                                                            x={x}
+                                                            y={y}
+                                                            width={r*.7}
+                                                            height={r*.7}
+                                                            href={data.countryflag}
+                                                        >
+                                                        </image>
+                                                        </>
+                                                    }
                                             </>
                                             ))}
                                         </Pack>
@@ -564,7 +616,7 @@ export default () => {
                                     }
                                 >
                                     <AlertTitle>
-                                        These are the number of confirmed cases for each continent
+                                        These are the continents with confirmed cases
                                     </AlertTitle>
                                     <strong>
                                         Mouse over data points for additional details.
