@@ -146,7 +146,7 @@ export default () => {
     const globalChange = (data) => {
         switch (selection) {
             case "Continents": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalvalue <= .1 ? "#ffffcc" 
                 : data.globalvalue <= .5 ? "#ffeda0"
                 : data.globalvalue <= 1 ? "#fed976"
@@ -160,7 +160,7 @@ export default () => {
                 )
             }
             case "Global": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
+                colorChange = data.totaldeaths === 0 ? "#FFFFFF" 
                 : data.globalpercent <= .1 ? "#ffffcc" 
                 : data.globalpercent <= .5 ? "#ffeda0"
                 : data.globalpercent <= 1 ? "#fed976"

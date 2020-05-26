@@ -115,7 +115,7 @@ export default () => {
     //     (hierarchydata)
 
     //SELECTION-------------------------------------------------------------
-    const [selection, setSelection] = React.useState("Global");
+    const [selection, setSelection] = React.useState("Continents");
 
     const handleChange = (e) => {
         setSelection(e.target.value)
@@ -144,7 +144,7 @@ export default () => {
 
     const globalChange = (data) => {
         switch (selection) {
-            case "Global": {
+            case "Continents": {
                 colorChange = data.newdeaths === 0 ? "#FFFFFF" 
                 : data.globalvalue <= .1 ? "#ffffcc" 
                 : data.globalvalue <= .5 ? "#ffeda0"
@@ -153,6 +153,20 @@ export default () => {
                 : data.globalvalue <= 5 ? "#fd8d3c"
                 : data.globalvalue <= 7.5 ? "#fc4e2a"
                 : data.globalvalue <= 10 ? "#e31a1c"
+                : "#b10026";
+                return (
+                    colorChange
+                )
+            }
+            case "Global": {
+                colorChange = data.newdeaths === 0 ? "#FFFFFF" 
+                : data.globalpercent <= .1 ? "#ffffcc" 
+                : data.globalpercent <= .5 ? "#ffeda0"
+                : data.globalpercent <= 1 ? "#fed976"
+                : data.globalpercent <= 2.5 ? "#feb24c"
+                : data.globalpercent <= 5 ? "#fd8d3c"
+                : data.globalpercent <= 7.5 ? "#fc4e2a"
+                : data.globalpercent <= 10 ? "#e31a1c"
                 : "#b10026";
                 return (
                     colorChange
@@ -337,7 +351,8 @@ export default () => {
                                 <Button onClick={resetTransform} endIcon={<Refresh />} variant="contained" color="primary">Reset Zoom</Button>
                                 <form className="form-selection">
                                     <select name="choose-region" id="choose-region" onChange={handleChange}>
-                                        <option value="Global">World</option>
+                                        <option value="Continents">Continents</option>
+                                        <option value="Global">Global</option>
                                         <option value="North America">North America</option>
                                         <option value="South America">South America</option>
                                         <option value="Europe">Europe</option>
@@ -492,7 +507,7 @@ export default () => {
                                                 <Tooltip title={
                                                     <Fragment>
                                                         <h2>{data.country}</h2>
-                                                        <h2>Total new confirmed deaths: {data.newdeaths}</h2>
+                                                        <h2>Total confirmed new deaths: {data.newdeaths}</h2>
                                                         <h2>% Of all new deaths in {continentName}: {data.regionpercent}%</h2>
                                                         <img src={data.countryflag}/>
                                                     </Fragment>
@@ -595,6 +610,209 @@ export default () => {
             selection === "Australia/Oceania" ?
             pageRender(arrangeRegionData(AusOceData[0].children), selection)
             :
+            selection === "Global" ?
+            <div>
+                <TransformWrapper defaultScale={1}>
+                {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                    <React.Fragment>
+                        <div>
+                            <Collapse in={expand}>
+                                <Alert severity="info"
+                                    action={
+                                        <IconButton
+                                            aria-label="close"
+                                            color="inherit"
+                                            size="small"
+                                            onClick={() => {
+                                                setExpand(false);
+                                            }}
+                                            >
+                                            <Close fontSize="inherit" />
+                                        </IconButton>
+                                    }
+                                >
+                                    <AlertTitle>
+                                        These are the top countries worldwide (max. 50) with the most confirmed deaths in the past 24 hours 
+                                    </AlertTitle>
+                                    <strong>
+                                        Mouse over data points for additional details.
+                                    </strong>
+                                </Alert>
+                            </Collapse>
+                        </div>
+                        <div className="svg-menu">
+                            <Grid
+                                container
+                                direction="row"
+                                justify="space-between"
+                                alignItems="center"
+                            >
+                                <Button onClick={resetTransform} endIcon={<Refresh />} variant="contained" color="primary">Reset Zoom</Button>
+                                <form className="form-selection">
+                                    <select name="choose-region" id="choose-region" onChange={handleChange}>
+                                        <option value="Continents">Continents</option>
+                                        <option value="Global">Global</option>
+                                        <option value="North America">North America</option>
+                                        <option value="South America">South America</option>
+                                        <option value="Europe">Europe</option>
+                                        <option value="Asia">Asia</option>
+                                        <option value="Africa">Africa</option>
+                                        <option value="Australia/Oceania">Australia/Oceania</option>
+                                    </select>
+                                </form>
+                                <div className="selection-container">
+                                    {   toggleFlag ?
+                                        <Button endIcon={<Visibility />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
+                                            Flags
+                                        </Button>
+                                        :
+                                        <Button endIcon={<VisibilityOff />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
+                                            Flags
+                                        </Button>
+                                    }
+                                    <Button onClick={handleClickOpen('paper')} endIcon={<TableChart />} variant="contained" color="primary">Show raw data</Button>
+                                </div>
+                                <Dialog
+                                    open={open}
+                                    onClose={handleClose}
+                                    scroll={scroll}
+                                    aria-labelledby="scroll-dialog-title"
+                                    aria-describedby="scroll-dialog-description"
+                                    fullWidth={true}
+                                    maxWidth="lg"
+                                >
+                                    <DialogTitle id="scroll-dialog-title">COVID19 Deaths (24H)</DialogTitle>
+                                    <DialogContent dividers={scroll === 'paper'}>
+                                        <TableContainer component={Paper}>
+                                            <Table aria-label="simple table">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>Continent</TableCell>
+                                                        <TableCell align="right">Total confirmed new deaths</TableCell>
+                                                        <TableCell align="right">% Global new deaths</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                    <TableBody>
+                                                        {arrangeAllData(countriesByTodayDeaths.slice(0, 50)).map((data, index) => {
+                                                            return (
+                                                                <>
+                                                                    <TableRow key={index}>
+                                                                        <TableCell component="th" scope="row">
+                                                                            {data.country}
+                                                                        </TableCell>
+                                                                        <TableCell align="right">{data.newdeaths}</TableCell>
+                                                                        <TableCell align="right">{data.globalpercent.toFixed(4)}%</TableCell>
+                                                                    </TableRow>
+                                                                </>
+                                                            )
+                                                        })}
+                                                    </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleClose} color="primary" variant="outlined">
+                                            Close
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </Grid>
+                            <div className="transform-container">
+                                <TransformComponent>
+                                    <Svg width={window.innerWidth * .8} height={window.innerHeight * .7} className="svg-content">
+                                        <Pack
+                                            data={{children: arrangeAllData(countriesByTodayDeaths.slice(0, 50))}}
+                                            sum={datum => datum.newdeaths}
+                                            size={[window.innerWidth * .8, (window.innerHeight * .65)]}
+                                            includeRoot={false}
+                                            padding={5}
+                                        >
+                                            {nodes => nodes.map(({ x, y, r, data, key }) => (
+                                            <>
+                                                {globalChange(data)}
+                                                <Tooltip title={
+                                                    <Fragment>
+                                                        <h2>{data.country}</h2>
+                                                        <h2>Total confirmed new deaths: {data.newdeaths}</h2>
+                                                        <h2>% Of all global new deaths: {data.globalpercent.toFixed(4)}%</h2>
+                                                        <img src={data.countryflag}/>
+                                                    </Fragment>
+                                                }>
+                                                    <Circle
+                                                        key={key}
+                                                        cx={x}
+                                                        cy={y}
+                                                        r={r}
+                                                        fill={colorChange}
+                                                        stroke='#404040'
+                                                    />
+                                                </Tooltip>
+                                                    {
+                                                        toggleFlag ? 
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        :
+                                                        <>
+                                                        <Text
+                                                            x={x}
+                                                            y={y}
+                                                            fontSize={r*.3}
+                                                        >
+                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
+                                                                {data.countrycode}
+                                                            </tspan>
+                                                        </Text>
+                                                        <image
+                                                            x={x}
+                                                            y={y}
+                                                            width={r*.7}
+                                                            height={r*.7}
+                                                            href={data.countryflag}
+                                                        >
+                                                        </image>
+                                                        </>
+                                                    }
+                                            </>
+                                            ))}
+                                        </Pack>
+                                    </Svg>
+                                </TransformComponent>
+                                <LegendDemo title="% Confirmed">
+                                    <LegendThreshold scale={thresholdScale}>
+                                    {labels => {
+                                        return labels.reverse().map((label, i) => {
+                                        const size = 15;
+                                        return (
+                                            <LegendItem
+                                            key={`legend-quantile-${i}`}
+                                            margin="1px 0"
+                                            >
+                                            <svg width={size} height={size}>
+                                                <rect fill={label.value} width={size} height={size} />
+                                            </svg>
+                                            <LegendLabel align={'left'} margin={'2px 0 0 10px'}>
+                                                {label.text}
+                                            </LegendLabel>
+                                            </LegendItem>
+                                        );
+                                        });
+                                    }}
+                                    </LegendThreshold>
+                                </LegendDemo>
+                            </div>
+                        </div>
+                    </React.Fragment>
+                )}
+                </TransformWrapper>
+            </div>
+            :
             <div>
                 <TransformWrapper defaultScale={1}>
                 {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
@@ -634,7 +852,8 @@ export default () => {
                                 <Button onClick={resetTransform} endIcon={<Refresh />} variant="contained" color="primary">Reset Zoom</Button>
                                 <form className="form-selection">
                                     <select name="choose-region" id="choose-region" onChange={handleChange}>
-                                        <option value="Global">World</option>
+                                        <option value="Continents">Continents</option>
+                                        <option value="Global">Global</option>
                                         <option value="North America">North America</option>
                                         <option value="South America">South America</option>
                                         <option value="Europe">Europe</option>
