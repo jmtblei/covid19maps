@@ -736,6 +736,7 @@ export default () => {
                                                         <h2>{data.country}</h2>
                                                         <h2>Total confirmed cases: {data.totalconfirmed}</h2>
                                                         <h2>% Global cases: {data.globalpercent.toFixed(4)}%</h2>
+                                                        <img src={data.countryflag}/>
                                                     </Fragment>
                                                 }>
                                                     <Circle
@@ -878,7 +879,7 @@ export default () => {
                                             <Table aria-label="simple table">
                                                 <TableHead>
                                                     <TableRow>
-                                                        <TableCell>Continent</TableCell>
+                                                        <TableCell>Country</TableCell>
                                                         <TableCell align="right">Total confirmed cases</TableCell>
                                                         <TableCell align="right">% Global cases</TableCell>
                                                     </TableRow>
