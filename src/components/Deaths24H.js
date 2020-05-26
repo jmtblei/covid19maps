@@ -687,7 +687,7 @@ export default () => {
                                             <Table aria-label="simple table">
                                                 <TableHead>
                                                     <TableRow>
-                                                        <TableCell>Continent</TableCell>
+                                                        <TableCell>Country</TableCell>
                                                         <TableCell align="right">Total confirmed new deaths</TableCell>
                                                         <TableCell align="right">% Global new deaths</TableCell>
                                                     </TableRow>
