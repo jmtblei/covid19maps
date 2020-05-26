@@ -41,9 +41,10 @@ export default function SimpleMenu() {
                 onClose={toggleClose}
               >
                 <MenuItem onClick={toggleClose} component={Link} to="/">Confirmed Cases (All Time)</MenuItem>
+                <MenuItem onClick={toggleClose} component={Link} to="/deaths-all-time">Confirmed Deaths (All Time)</MenuItem>
+                <MenuItem onClick={toggleClose} component={Link} to="/recoveries-all-time">Confirmed Recoveries (All Time)</MenuItem>
                 <MenuItem onClick={toggleClose} component={Link} to="/confirmed-24h">Confirmed Cases (24H)</MenuItem>
                 <MenuItem onClick={toggleClose} component={Link} to="/deaths-24h">Confirmed Deaths (24H)</MenuItem>
-                <MenuItem onClick={toggleClose} component={Link} to="/deaths-all-time">Confirmed Deaths (All Time)</MenuItem>
               </Menu>
               <Typography variant="h6">COVID-19 MAPS</Typography>
               <Button 

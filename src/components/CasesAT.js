@@ -64,7 +64,8 @@ export default () => {
                 totaldeaths: datum.deaths,
                 newcases: datum.todayCases,
                 newdeaths: datum.todayDeaths,
-                continent: datum.continent
+                continent: datum.continent,
+                recovered: datum.recovered
             }
         })
     };
@@ -382,7 +383,7 @@ export default () => {
                                                         <TableCell>Country</TableCell>
                                                         <TableCell align="right">Total confirmed cases</TableCell>
                                                         <TableCell align="right">% Global cases</TableCell>
-                                                        <TableCell align="right">% Of all cases in{continentName}</TableCell>
+                                                        <TableCell align="right">% Of all cases in {continentName}</TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                     <TableBody>
