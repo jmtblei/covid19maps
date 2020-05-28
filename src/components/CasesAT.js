@@ -30,12 +30,12 @@ import { LegendThreshold, LegendItem, LegendLabel } from "@vx/legend";
 
 export default () => {
     const countryData = useSelector(state => state.countryData);
-    console.log("statedata", countryData)
+    // console.log("statedata", countryData)
 
     const countriesByCases = countryData
         .filter(data => data.cases > 0)
         .sort((a, b) => b.cases - a.cases)
-    console.log("all confirmed cases", countriesByCases);
+    // console.log("all confirmed cases", countriesByCases);
 
     const worldChange = (countryChange, globalChange) => {
         return ((countryChange / globalChange) * 100).toFixed(4)
