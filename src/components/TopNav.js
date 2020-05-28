@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogContentText
 } from "@material-ui/core";
-import { Help, FilterList, GitHub, LinkedIn } from "@material-ui/icons";
+import { Help, FilterList, GitHub, LinkedIn, Web } from "@material-ui/icons";
 
 export default function SimpleMenu() {
   //Filter
@@ -96,6 +96,11 @@ export default function SimpleMenu() {
                             <a href="https://www.linkedin.com/in/jmtblei/" target="_blank" rel="noopener noreferrer" className="icon-link">
                                 <IconButton aria-label="github" color="primary" className="icon-color">
                                     <LinkedIn />
+                                </IconButton>
+                            </a>
+                            <a href="https://bensonlei.com/" target="_blank" rel="noopener noreferrer" className="icon-link">
+                                <IconButton aria-label="github" color="primary" className="icon-color">
+                                    <Web />
                                 </IconButton>
                             </a>
                             <br />
