@@ -1,9 +1,7 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { Svg, Text, Circle } from "@potion/element";
-import { Pack } from "@potion/layout";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { 
-    Tooltip, 
     Button, 
     DialogActions, 
     DialogContent, 
@@ -20,15 +18,15 @@ import {
     IconButton,
     Grid,
 } from "@material-ui/core";
-import { Close, TableChart, Refresh, Visibility, VisibilityOff, Info } from "@material-ui/icons";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { Close, TableChart, Refresh, Info } from "@material-ui/icons";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import * as d3 from "d3";
 import * as d3Array from "d3-array"
 import * as d3Hierarchy from "d3-hierarchy";
+import * as d3Collection from "d3-collection";
+import NetworkFrame from "semiotic/lib/NetworkFrame";
 import { scaleThreshold } from "@vx/scale";
 import { LegendThreshold, LegendItem, LegendLabel } from "@vx/legend";
-
 
 export default () => {
     const countryData = useSelector(state => state.countryData);
@@ -70,64 +68,60 @@ export default () => {
         })
     };
 
-    const arrangeRegionData = (data) => {
-        let regionChange = data.reduce((a, c) => a + c.totalconfirmed, 0);
-        return data.map(datum => {
-            return {
-                ...datum,
-                regionpercent: contChange(datum.totalconfirmed, regionChange)
-            }
-        })
-    };
+    //-----------------------------LEGACY CODE--------------------------------------------------------------------------------------------------------
+    // const arrangeRegionData = (data) => {
+    //     let regionChange = data.reduce((a, c) => a + c.totalconfirmed, 0);
+    //     return data.map(datum => {
+    //         return {
+    //             ...datum,
+    //             regionpercent: contChange(datum.totalconfirmed, regionChange)
+    //         }
+    //     })
+    // };
 
-    const covidContinents = d3Array.group(arrangeAllData(countriesByCases), d => d.continent);
-    // console.log("coviddata", covidContinents);
-
-    const continentData = Array.from(covidContinents, ([key, value, globalvalue]) => ({
-            key, 
-            value: value.reduce((a, c) => a + c.totalconfirmed, 0), 
-            globalvalue: value.reduce((a, c) => a + c.globalpercent, 0)
-        })).slice(0, -1);
-    // console.log("continentData", continentData)
-
-    const continentChildren = Array.from(covidContinents, ([key, value, children]) => ({key, value: value.reduce((a, c) => a + c.totalconfirmed, 0), children: value}));
-    const NorthAmericaData = continentChildren.filter(n => n.key === "North America");
-    const SouthAmericaData = continentChildren.filter(n => n.key === "South America");
-    const EuropeData = continentChildren.filter(n => n.key === "Europe");
-    const AsiaData = continentChildren.filter(n => n.key === "Asia");
-    const AfricaData = continentChildren.filter(n => n.key === "Africa");
-    const AusOceData = continentChildren.filter(n => n.key === "Australia/Oceania");
-
-    // const continentsum = d3Array.rollup(arrangeAllData(countriesByCases), v => d3.sum(v, d => d.totalconfirmed), v => v.continent, v => v.country);
-    // const continentsum = d3Array.rollup(countryData, v => d3.sum(v, d => d.cases), v => v.continent, v => v.country)
+    
+    // const continentData = Array.from(covidContinents, ([key, value, globalvalue]) => ({
+    //     key, 
+    //     value: value.reduce((a, c) => a + c.totalconfirmed, 0), 
+    //     globalvalue: value.reduce((a, c) => a + c.globalpercent, 0)
+    // })).slice(0, -1);
+    // // console.log("continentData", continentData)
+    
+    // const continentChildren = Array.from(covidContinents, ([key, value, children]) => ({key, value: value.reduce((a, c) => a + c.totalconfirmed, 0), children: value}));
+    // const NorthAmericaData = continentChildren.filter(n => n.key === "North America");
+    // const SouthAmericaData = continentChildren.filter(n => n.key === "South America");
+    // const EuropeData = continentChildren.filter(n => n.key === "Europe");
+    // const AsiaData = continentChildren.filter(n => n.key === "Asia");
+    // const AfricaData = continentChildren.filter(n => n.key === "Africa");
+    // const AusOceData = continentChildren.filter(n => n.key === "Australia/Oceania");
+    
+    const continentsum = d3Array.rollup(arrangeAllData(countriesByCases), v => d3.sum(v, d => d.totalconfirmed), v => v.continent, v => v.country, v => v.globalpercent, v => v.countryflag);
+    // const continentsum = d3Array.rollup(countryData, v => d3.sum(v, d => d.cases), v => v.continent, v => v.country, v => v.countryInfo);
     // console.log("continentsum", continentsum);
-
-    // const childrenAccessor = ([ key, value ]) => value.size && Array.from(value);
-
-    // const hierarchydata = 
-    //     d3Hierarchy.hierarchy([null, continentsum], childrenAccessor)
-    //     .sum(([ key, value ]) => value)
-    //     .sort((a, b) => b.value - a.value)
+    
+    const childrenAccessor = ([ key, value ]) => value.size && Array.from(value);
+    
+    const hierarchydata = 
+    d3Hierarchy.hierarchy([null, continentsum], childrenAccessor)
+    .sum(([ key, value ]) => value)
+    .sort((a, b) => b.value - a.value)
     // console.log("hierdata", hierarchydata)
-
+    
+    //---------------WIP----------------------------------------------------------------------------------------------------
     // const circlepack = () => d3.pack()
     //     .size([window.innerWidth, (window.innerHeight * .65)])
     //     .padding(1)
     //     (hierarchydata)
+    
+    // const nestedData = d3Collection.nest().key(d =>d.continent).key(d => d.country).entries(countryData);
+    // console.log("nestedData", nestedData);
+    // const hierdata2 = d3Hierarchy.hierarchy(nestedData, d => d.values);
+    // console.log("hdata2", hierdata2);
 
-    //SELECTION-------------------------------------------------------------
-    const [selection, setSelection] = React.useState("Continents");
+    // const covidContinents = d3Array.group(arrangeAllData(countriesByCases), d => d.continent);
+    // // console.log("coviddata", covidContinents);
 
-    const handleChange = (e) => {
-        setSelection(e.target.value)
-    };
-
-    const [toggleRegion, setToggleRegion] = React.useState(false);
-    const [toggleFlag, setToggleFlag] = React.useState(true);
-    //-------------------------------------------------------------------------------------------
-    let colorChange;
-    let colorRegionChange;
-
+    //Legend scale VX
     const LegendDemo = ({ title, children }) => {
         return (
           <div className="legend" style={{color:"white"}}>
@@ -143,154 +137,93 @@ export default () => {
         range: ["#ffffcc", "#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc4e2a" , "#e31a1c", "#b10026"]
     });
 
-    const globalChange = (data) => {
-        switch (selection) {
-            case "Continents": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-                : data.globalvalue <= .1 ? "#ffffcc" 
-                : data.globalvalue <= .5 ? "#ffeda0"
-                : data.globalvalue <= 1 ? "#fed976"
-                : data.globalvalue <= 2.5 ? "#feb24c"
-                : data.globalvalue <= 5 ? "#fd8d3c"
-                : data.globalvalue <= 7.5 ? "#fc4e2a"
-                : data.globalvalue <= 10 ? "#e31a1c"
-                : "#b10026";
-                return (
-                    colorChange
-                )
-            }
-            case "Global": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-                : data.globalpercent <= .1 ? "#ffffcc" 
-                : data.globalpercent <= .5 ? "#ffeda0"
-                : data.globalpercent <= 1 ? "#fed976"
-                : data.globalpercent <= 2.5 ? "#feb24c"
-                : data.globalpercent <= 5 ? "#fd8d3c"
-                : data.globalpercent <= 7.5 ? "#fc4e2a"
-                : data.globalpercent <= 10 ? "#e31a1c"
-                : "#b10026";
-                return (
-                    colorChange
-                )
-            }
-            case "North America": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-                : data.globalpercent <= .1 ? "#ffffcc" 
-                : data.globalpercent <= .5 ? "#ffeda0"
-                : data.globalpercent <= 1 ? "#fed976"
-                : data.globalpercent <= 2.5 ? "#feb24c"
-                : data.globalpercent <= 5 ? "#fd8d3c"
-                : data.globalpercent <= 7.5 ? "#fc4e2a"
-                : data.globalpercent <= 10 ? "#e31a1c"
-                : "#b10026";
-                return (
-                    colorChange
-                )
-            }
-            case "South America": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-                : data.globalpercent <= .1 ? "#ffffcc" 
-                : data.globalpercent <= .5 ? "#ffeda0"
-                : data.globalpercent <= 1 ? "#fed976"
-                : data.globalpercent <= 2.5 ? "#feb24c"
-                : data.globalpercent <= 5 ? "#fd8d3c"
-                : data.globalpercent <= 7.5 ? "#fc4e2a"
-                : data.globalpercent <= 10 ? "#e31a1c"
-                : "#b10026";
-                return (
-                    colorChange
-                )
-            }
-            case "Europe": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-                : data.globalpercent <= .1 ? "#ffffcc" 
-                : data.globalpercent <= .5 ? "#ffeda0"
-                : data.globalpercent <= 1 ? "#fed976"
-                : data.globalpercent <= 2.5 ? "#feb24c"
-                : data.globalpercent <= 5 ? "#fd8d3c"
-                : data.globalpercent <= 7.5 ? "#fc4e2a"
-                : data.globalpercent <= 10 ? "#e31a1c"
-                : "#b10026";
-                return (
-                    colorChange
-                )
-            }
-            case "Asia": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-                : data.globalpercent <= .1 ? "#ffffcc" 
-                : data.globalpercent <= .5 ? "#ffeda0"
-                : data.globalpercent <= 1 ? "#fed976"
-                : data.globalpercent <= 2.5 ? "#feb24c"
-                : data.globalpercent <= 5 ? "#fd8d3c"
-                : data.globalpercent <= 7.5 ? "#fc4e2a"
-                : data.globalpercent <= 10 ? "#e31a1c"
-                : "#b10026";
-                return (
-                    colorChange
-                )
-            }
-            case "Africa": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-                : data.globalpercent <= .1 ? "#ffffcc" 
-                : data.globalpercent <= .5 ? "#ffeda0"
-                : data.globalpercent <= 1 ? "#fed976"
-                : data.globalpercent <= 2.5 ? "#feb24c"
-                : data.globalpercent <= 5 ? "#fd8d3c"
-                : data.globalpercent <= 7.5 ? "#fc4e2a"
-                : data.globalpercent <= 10 ? "#e31a1c"
-                : "#b10026";
-                return (
-                    colorChange
-                )
-            }
-            case "Australia/Oceania": {
-                colorChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-                : data.globalpercent <= .1 ? "#ffffcc" 
-                : data.globalpercent <= .5 ? "#ffeda0"
-                : data.globalpercent <= 1 ? "#fed976"
-                : data.globalpercent <= 2.5 ? "#feb24c"
-                : data.globalpercent <= 5 ? "#fd8d3c"
-                : data.globalpercent <= 7.5 ? "#fc4e2a"
-                : data.globalpercent <= 10 ? "#e31a1c"
-                : "#b10026";
-                return (
-                    colorChange
-                )
-            }
-            default: {
-                return selection
-            }
-        }
-    };
+    //CirclePack render props
+    const frameProps = { 
+        /* --- Data --- */
+        edges: hierarchydata,
 
-    const regionChange = (data) => {
-        colorRegionChange = data.totalconfirmed === 0 ? "#FFFFFF" 
-            : data.regionpercent <= .1 ? "#ffffcc" 
-            : data.regionpercent <= .5 ? "#ffeda0"
-            : data.regionpercent <= 1 ? "#fed976"
-            : data.regionpercent <= 2.5 ? "#feb24c"
-            : data.regionpercent <= 5 ? "#fd8d3c"
-            : data.regionpercent <= 7.5 ? "#fc4e2a"
-            : data.regionpercent <= 10 ? "#e31a1c"
-            : "#b10026";
-            return (
-                colorRegionChange
+        /* --- Size --- */
+        size: [window.innerWidth * .8, window.innerHeight *.7],
+        margin: 50,
+
+        /* --- Layout --- */
+        networkType: "circlepack",
+
+        /* --- Process --- */
+        nodeIDAccessor: "name",
+
+        /* --- Customize --- */
+        nodeStyle: d => ({
+            fill: d.depth === 1 ? "none" 
+            : d.parent[0] <= .1 ? "#ffffcc" 
+            : d.parent[0] <= .5 ? "#ffeda0"
+            : d.parent[0] <= 1 ? "#fed976"
+            : d.parent[0] <= 2.5 ? "#feb24c"
+            : d.parent[0] <= 5 ? "#fd8d3c"
+            : d.parent[0] <= 7.5 ? "#fc4e2a"
+            : d.parent[0] <= 10 ? "#e31a1c"
+            : "#b10026",
+            stroke: d.depth === 1 ? "#9fd0cb": "black",
+        }),
+        filterRenderedNodes: d => d.depth !== 0,
+
+        /* --- Interact --- */
+        hoverAnnotation: [
+            { type: "desaturation-layer", style: { fill: "white", fillOpacity: 0.05 } },
+            {
+            type: "highlight",
+            style: d => ({
+                fill: "white",
+                stroke: "white",
+                fillOpacity: 0.4
+            })
+            },
+            { type: "frame-hover" }
+        ],
+
+        /* --- Annotate --- */
+        tooltipContent: d => (
+            <div className="tooltip-content">
+            {d.depth === 1 ? 
+            <>
+            <h5 style={{margin:5}}>Region: {d.data[0]}</h5>
+            <h5 style={{margin:5}}>Total confirmed cases: {d.value}</h5>
+            </>
+            : 
+            <>
+            <h5 style={{margin:5}}>Country: {d.parent.parent[0]}</h5>
+            <h5 style={{margin:5}}>Total confirmed cases: {d.value}</h5>
+            <h5 style={{margin:5}}>% Global cases: {d.parent[0]}%</h5>
+            <img width="70%" height="70%" src={d.data[0]}></img>
+            </> 
+            }
+            </div>
+            ),
+        nodeLabels: d => {
+            return d.depth > 1 ? null : (
+            <g>
+                <text fontSize="1.5em" textAnchor="middle" fill={"#9fd0cb"} stroke={"black"}>
+                    {d.inDegree > 0 ? d.data[0] : null}
+                </text>
+            </g>
             )
+        },
     };
 
-    //DETAILED DATA------------------------------------------------------
-    const [expand, setExpand] = React.useState(true);
-    const [open, setOpen] = React.useState(false);
-    const [scroll, setScroll] = React.useState('paper');
+    //MUI toggles
+
+    const [expand, setExpand] = React.useState(true); //alert
+    const [open, setOpen] = React.useState(false); //showdata
+    const [scroll, setScroll] = React.useState('paper'); //rawdata
 
     const handleClickOpen = (scrollType) => () => {
         setOpen(true);
         setScroll(scrollType);
-    };
+    }; //showdata
 
     const handleClose = () => {
         setOpen(false);
-    };
+    }; //showdata
 
     const descriptionElementRef = React.useRef(null);
     React.useEffect(() => {
@@ -300,12 +233,10 @@ export default () => {
             descriptionElement.focus();
         }
         }
-    }, [open]);
+    }, [open]); //rawdata
 
-    //RENDER---------------------------------------------------------------------
-    let pageRender = (relationalData, continentName) => (
-        <div>
-                <TransformWrapper defaultScale={1}>
+    return (
+             <TransformWrapper defaultScale={1}>
                 {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
                     <React.Fragment>
                         <div>
@@ -325,16 +256,7 @@ export default () => {
                                     }
                                 >
                                     <AlertTitle>
-                                        {
-                                            toggleRegion ? 
-                                            <>
-                                            These are the countries in {continentName} with confirmed cases, compared globally
-                                            </>
-                                            :
-                                            <>
-                                            These are the countries in {continentName} with confirmed cases, compared regionally
-                                            </>
-                                        }
+                                        These are countries/regions with confirmed cases.
                                     </AlertTitle>
                                     <strong>
                                         Mouse over data points for additional details.
@@ -350,34 +272,10 @@ export default () => {
                                 alignItems="center"
                             >
                                 <Button onClick={resetTransform} endIcon={<Refresh />} variant="contained" color="primary">Reset Zoom</Button>
-                                <form className="form-selection">
-                                    <select name="choose-region" id="choose-region" onChange={handleChange}>
-                                        <option value="Continents">Continents</option>
-                                        <option value="Global">Global</option>
-                                        <option value="North America">North America</option>
-                                        <option value="South America">South America</option>
-                                        <option value="Europe">Europe</option>
-                                        <option value="Asia">Asia</option>
-                                        <option value="Africa">Africa</option>
-                                        <option value="Australia/Oceania">Australia/Oceania</option>
-                                    </select>
-                                </form>
                                 <div className="selection-container">
                                     <Button onClick={() => {setExpand(true)}} disabled={expand} variant="contained" color="primary" style={{marginRight:"5px", color:"white"}}>
                                         <Info/>
                                     </Button>
-                                    <Button onClick={() => setToggleRegion(!toggleRegion)} variant="contained" color="primary" style={{marginRight:"5px"}}>
-                                        {toggleRegion ? "Region" : "Global"}
-                                    </Button>
-                                    {   toggleFlag ?
-                                        <Button endIcon={<Visibility />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
-                                            Flags
-                                        </Button>
-                                        :
-                                        <Button endIcon={<VisibilityOff />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
-                                            Flags
-                                        </Button>
-                                    }
                                     <Button onClick={handleClickOpen('paper')} endIcon={<TableChart />} variant="contained" color="primary">Show raw data</Button>
                                 </div>
                                 <Dialog
@@ -398,22 +296,20 @@ export default () => {
                                                         <TableCell>Country</TableCell>
                                                         <TableCell align="right">Total confirmed cases</TableCell>
                                                         <TableCell align="right">% Global cases</TableCell>
-                                                        <TableCell align="right">% Of all cases in {continentName}</TableCell>
                                                     </TableRow>
                                                 </TableHead>
-                                                    <TableBody>
-                                                        {relationalData.map((data, index) => {
-                                                            return (
-                                                                <>
-                                                                    <TableRow key={index}>
-                                                                        <TableCell component="th" scope="row">
-                                                                            {data.country}
-                                                                        </TableCell>
-                                                                        <TableCell align="right">{data.totalconfirmed}</TableCell>
-                                                                        <TableCell align="right">{data.globalpercent}%</TableCell>
-                                                                        <TableCell align="right">{data.regionpercent}%</TableCell>
-                                                                    </TableRow>
-                                                                </>
+                                                <TableBody>
+                                                    {arrangeAllData(countriesByCases).map((data, index) => {
+                                                        return (
+                                                            <>
+                                                                <TableRow key={index}>
+                                                                    <TableCell component="th" scope="row">
+                                                                    {data.country}
+                                                                    </TableCell>
+                                                                    <TableCell align="right">{data.totalconfirmed}</TableCell>
+                                                                    <TableCell align="right">{data.globalpercent}%</TableCell>
+                                                                </TableRow>
+                                                            </>
                                                             )
                                                         })}
                                                     </TableBody>
@@ -427,562 +323,37 @@ export default () => {
                                     </DialogActions>
                                 </Dialog>
                             </Grid>
-                            <div className="transform-container">
-                                <TransformComponent>
-                                    <Svg width={window.innerWidth * .8} height={window.innerHeight * .7} className="svg-content">
-                                        {
-                                            toggleRegion ?
-                                        <Pack
-                                            data={{children: relationalData}}
-                                            sum={datum => datum.globalpercent}
-                                            size={[window.innerWidth * .8, (window.innerHeight * .65)]}
-                                            includeRoot={false}
-                                            padding={5}
-                                        >
-                                            {nodes => nodes.map(({ x, y, r, data, key }) => (
-                                            <>
-                                                {globalChange(data)}
-                                                <Tooltip title={
-                                                    <Fragment>
-                                                        <h2>{data.country}</h2>
-                                                        <h2>Total confirmed cases: {data.totalconfirmed}</h2>
-                                                        <h2>% Global cases: {data.globalpercent}%</h2>
-                                                        <img src={data.countryflag}/>
-                                                    </Fragment>
-                                                }>
-                                                    <Circle
-                                                        key={key}
-                                                        cx={x}
-                                                        cy={y}
-                                                        r={r}
-                                                        fill={colorChange}
-                                                        stroke='#404040'
-                                                    />
-                                                </Tooltip>
-                                                    {
-                                                        toggleFlag ? 
-                                                        <Text
-                                                            x={x}
-                                                            y={y}
-                                                            fontSize={r*.3}
-                                                        >
-                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                                {data.countrycode}
-                                                            </tspan>
-                                                        </Text>
-                                                        :
-                                                        <>
-                                                        <Text
-                                                            x={x}
-                                                            y={y}
-                                                            fontSize={r*.3}
-                                                        >
-                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                                {data.countrycode}
-                                                            </tspan>
-                                                        </Text>
-                                                        <image
-                                                            x={x}
-                                                            y={y}
-                                                            width={r*.7}
-                                                            height={r*.7}
-                                                            href={data.countryflag}
-                                                        >
-                                                        </image>
-                                                        </>
-                                                    }
-                                            </>
-                                            ))}
-                                        </Pack>
-                                        :
-                                        <Pack
-                                            data={{children: relationalData}}
-                                            sum={datum => datum.regionpercent}
-                                            size={[window.innerWidth * .8, (window.innerHeight * .65)]}
-                                            includeRoot={false}
-                                            padding={5}
-                                        >
-                                            {nodes => nodes.map(({ x, y, r, data, key }) => (
-                                            <>
-                                                {regionChange(data)}
-                                                <Tooltip title={
-                                                    <Fragment>
-                                                        <h2>{data.country}</h2>
-                                                        <h2>Total confirmed cases: {data.totalconfirmed}</h2>
-                                                        <h2>% Of all cases in {continentName}: {data.regionpercent}%</h2>
-                                                        <img src={data.countryflag}/>
-                                                    </Fragment>
-                                                }>
-                                                    <Circle
-                                                        key={key}
-                                                        cx={x}
-                                                        cy={y}
-                                                        r={r}
-                                                        fill={colorRegionChange}
-                                                        stroke='#404040'
-                                                    />
-                                                </Tooltip>
-                                                    {
-                                                        toggleFlag ? 
-                                                        <Text
-                                                            x={x}
-                                                            y={y}
-                                                            fontSize={r*.3}
-                                                        >
-                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                                {data.countrycode}
-                                                            </tspan>
-                                                        </Text>
-                                                        :
-                                                        <>
-                                                        <Text
-                                                            x={x}
-                                                            y={y}
-                                                            fontSize={r*.3}
-                                                        >
-                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                                {data.countrycode}
-                                                            </tspan>
-                                                        </Text>
-                                                        <image
-                                                            x={x}
-                                                            y={y}
-                                                            width={r*.7}
-                                                            height={r*.7}
-                                                            href={data.countryflag}
-                                                        >
-                                                        </image>
-                                                        </>
-                                                    }
-                                            </>
-                                            ))}
-                                        </Pack>
-                                        }
-                                    </Svg>
-                                </TransformComponent>
-                                <LegendDemo title="% Confirmed">
-                                    <LegendThreshold scale={thresholdScale}>
+                        </div>
+                        <div className="transform-container">    
+                            <TransformComponent>
+                                <NetworkFrame {...frameProps}/>
+                            </TransformComponent>
+                            <LegendDemo title="% Confirmed">
+                                <LegendThreshold scale={thresholdScale}>
                                     {labels => {
                                         return labels.reverse().map((label, i) => {
                                         const size = 15;
                                         return (
                                             <LegendItem
-                                            key={`legend-quantile-${i}`}
-                                            margin="1px 0"
+                                                key={`legend-quantile-${i}`}
+                                                margin="1px 0"
                                             >
-                                            <svg width={size} height={size}>
-                                                <rect fill={label.value} width={size} height={size} />
-                                            </svg>
-                                            <LegendLabel align={'left'} margin={'2px 0 0 10px'}>
-                                                {label.text}
-                                            </LegendLabel>
+                                                <svg width={size} height={size}>
+                                                    <rect fill={label.value} width={size} height={size} />
+                                                </svg>
+                                                <LegendLabel align={'left'} margin={'2px 0 0 10px'}>
+                                                    {label.text}
+                                                </LegendLabel>
                                             </LegendItem>
                                         );
                                         });
                                     }}
-                                    </LegendThreshold>
-                                </LegendDemo>
-                            </div>
+                                </LegendThreshold>
+                            </LegendDemo>
                         </div>
                     </React.Fragment>
                 )}
-                </TransformWrapper>
-            </div>
+            </TransformWrapper>
     )
-    
-    return (
-        <div>
-            {
-            selection === "North America" ?
-            pageRender(arrangeRegionData(NorthAmericaData[0].children), selection)
-            : 
-            selection === "South America" ?
-            pageRender(arrangeRegionData(SouthAmericaData[0].children), selection)
-            :
-            selection === "Europe" ?
-            pageRender(arrangeRegionData(EuropeData[0].children), selection)
-            :
-            selection === "Asia" ?
-            pageRender(arrangeRegionData(AsiaData[0].children), selection)
-            :
-            selection === "Africa" ?
-            pageRender(arrangeRegionData(AfricaData[0].children), selection)
-            :
-            selection === "Australia/Oceania" ?
-            pageRender(arrangeRegionData(AusOceData[0].children), selection)
-            :
-            selection === "Global" ?
-            <div>
-                <TransformWrapper defaultScale={1}>
-                {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-                    <React.Fragment>
-                        <div>
-                            <Collapse in={expand}>
-                                <Alert severity="info"
-                                    action={
-                                        <IconButton
-                                            aria-label="close"
-                                            color="inherit"
-                                            size="small"
-                                            onClick={() => {
-                                                setExpand(false);
-                                            }}
-                                            >
-                                            <Close fontSize="inherit" />
-                                        </IconButton>
-                                    }
-                                >
-                                    <AlertTitle>
-                                        These are the top countries worldwide (max. 50) with the most confirmed cases 
-                                    </AlertTitle>
-                                    <strong>
-                                        Mouse over data points for additional details.
-                                    </strong>
-                                </Alert>
-                            </Collapse>
-                        </div>
-                        <div className="svg-menu">
-                            <Grid
-                                container
-                                direction="row"
-                                justify="space-between"
-                                alignItems="center"
-                            >
-                                <Button onClick={resetTransform} endIcon={<Refresh />} variant="contained" color="primary">Reset Zoom</Button>
-                                <form className="form-selection">
-                                    <select name="choose-region" id="choose-region" onChange={handleChange}>
-                                        <option value="Continents">Continents</option>
-                                        <option value="Global">Global</option>
-                                        <option value="North America">North America</option>
-                                        <option value="South America">South America</option>
-                                        <option value="Europe">Europe</option>
-                                        <option value="Asia">Asia</option>
-                                        <option value="Africa">Africa</option>
-                                        <option value="Australia/Oceania">Australia/Oceania</option>
-                                    </select>
-                                </form>
-                                <div className="selection-container">
-                                    {   toggleFlag ?
-                                        <Button endIcon={<Visibility />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
-                                            Flags
-                                        </Button>
-                                        :
-                                        <Button endIcon={<VisibilityOff />} onClick={() => setToggleFlag(!toggleFlag)} variant="contained" color="primary" style={{marginRight:"5px"}}>
-                                            Flags
-                                        </Button>
-                                    }
-                                    <Button onClick={handleClickOpen('paper')} endIcon={<TableChart />} variant="contained" color="primary">Show raw data</Button>
-                                </div>
-                                <Dialog
-                                    open={open}
-                                    onClose={handleClose}
-                                    scroll={scroll}
-                                    aria-labelledby="scroll-dialog-title"
-                                    aria-describedby="scroll-dialog-description"
-                                    fullWidth={true}
-                                    maxWidth="lg"
-                                >
-                                    <DialogTitle id="scroll-dialog-title">COVID19 Cases (All Time)</DialogTitle>
-                                    <DialogContent dividers={scroll === 'paper'}>
-                                        <TableContainer component={Paper}>
-                                            <Table aria-label="simple table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell>Country</TableCell>
-                                                        <TableCell align="right">Total confirmed cases</TableCell>
-                                                        <TableCell align="right">% Global cases</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                    <TableBody>
-                                                        {arrangeAllData(countriesByCases.slice(0, 50)).map((data, index) => {
-                                                            return (
-                                                                <>
-                                                                    <TableRow key={index}>
-                                                                        <TableCell component="th" scope="row">
-                                                                            {data.country}
-                                                                        </TableCell>
-                                                                        <TableCell align="right">{data.totalconfirmed}</TableCell>
-                                                                        <TableCell align="right">{data.globalpercent.toFixed(4)}%</TableCell>
-                                                                    </TableRow>
-                                                                </>
-                                                            )
-                                                        })}
-                                                    </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleClose} color="primary" variant="outlined">
-                                            Close
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
-                            </Grid>
-                            <div className="transform-container">
-                                <TransformComponent>
-                                    <Svg width={window.innerWidth * .8} height={window.innerHeight * .7} className="svg-content">
-                                        <Pack
-                                            data={{children: arrangeAllData(countriesByCases.slice(0, 50))}}
-                                            sum={datum => datum.totalconfirmed}
-                                            size={[window.innerWidth * .8, (window.innerHeight * .65)]}
-                                            includeRoot={false}
-                                            padding={5}
-                                        >
-                                            {nodes => nodes.map(({ x, y, r, data, key }) => (
-                                            <>
-                                                {globalChange(data)}
-                                                <Tooltip title={
-                                                    <Fragment>
-                                                        <h2>{data.country}</h2>
-                                                        <h2>Total confirmed cases: {data.totalconfirmed}</h2>
-                                                        <h2>% Global cases: {data.globalpercent.toFixed(4)}%</h2>
-                                                        <img src={data.countryflag}/>
-                                                    </Fragment>
-                                                }>
-                                                    <Circle
-                                                        key={key}
-                                                        cx={x}
-                                                        cy={y}
-                                                        r={r}
-                                                        fill={colorChange}
-                                                        stroke='#404040'
-                                                    />
-                                                </Tooltip>
-                                                    {
-                                                        toggleFlag ? 
-                                                        <Text
-                                                            x={x}
-                                                            y={y}
-                                                            fontSize={r*.3}
-                                                        >
-                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                                {data.countrycode}
-                                                            </tspan>
-                                                        </Text>
-                                                        :
-                                                        <>
-                                                        <Text
-                                                            x={x}
-                                                            y={y}
-                                                            fontSize={r*.3}
-                                                        >
-                                                            <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                                {data.countrycode}
-                                                            </tspan>
-                                                        </Text>
-                                                        <image
-                                                            x={x}
-                                                            y={y}
-                                                            width={r*.7}
-                                                            height={r*.7}
-                                                            href={data.countryflag}
-                                                        >
-                                                        </image>
-                                                        </>
-                                                    }
-                                            </>
-                                            ))}
-                                        </Pack>
-                                    </Svg>
-                                </TransformComponent>
-                                <LegendDemo title="% Confirmed">
-                                    <LegendThreshold scale={thresholdScale}>
-                                    {labels => {
-                                        return labels.reverse().map((label, i) => {
-                                        const size = 15;
-                                        return (
-                                            <LegendItem
-                                            key={`legend-quantile-${i}`}
-                                            margin="1px 0"
-                                            >
-                                            <svg width={size} height={size}>
-                                                <rect fill={label.value} width={size} height={size} />
-                                            </svg>
-                                            <LegendLabel align={'left'} margin={'2px 0 0 10px'}>
-                                                {label.text}
-                                            </LegendLabel>
-                                            </LegendItem>
-                                        );
-                                        });
-                                    }}
-                                    </LegendThreshold>
-                                </LegendDemo>
-                            </div>
-                        </div>
-                    </React.Fragment>
-                )}
-                </TransformWrapper>
-            </div>
-            :
-            <div>
-                <TransformWrapper defaultScale={1}>
-                {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-                    <React.Fragment>
-                        <div>
-                            <Collapse in={expand}>
-                                <Alert severity="info"
-                                    action={
-                                        <IconButton
-                                            aria-label="close"
-                                            color="inherit"
-                                            size="small"
-                                            onClick={() => {
-                                                setExpand(false);
-                                            }}
-                                            >
-                                            <Close fontSize="inherit" />
-                                        </IconButton>
-                                    }
-                                >
-                                    <AlertTitle>
-                                        These are the continents with confirmed cases
-                                    </AlertTitle>
-                                    <strong>
-                                        Mouse over data points for additional details.
-                                    </strong>
-                                </Alert>
-                            </Collapse>
-                        </div>
-                        <div className="svg-menu">
-                            <Grid
-                                container
-                                direction="row"
-                                justify="space-between"
-                                alignItems="center"
-                            >
-                                <Button onClick={resetTransform} endIcon={<Refresh />} variant="contained" color="primary">Reset Zoom</Button>
-                                <form className="form-selection">
-                                    <select name="choose-region" id="choose-region" onChange={handleChange}>
-                                        <option value="Continents">Continents</option>
-                                        <option value="Global">Global</option>
-                                        <option value="North America">North America</option>
-                                        <option value="South America">South America</option>
-                                        <option value="Europe">Europe</option>
-                                        <option value="Asia">Asia</option>
-                                        <option value="Africa">Africa</option>
-                                        <option value="Australia/Oceania">Australia/Oceania</option>
-                                    </select>
-                                </form>
-                                <Button onClick={handleClickOpen('paper')} endIcon={<TableChart />} variant="contained" color="primary">Show raw data</Button>
-                                <Dialog
-                                    open={open}
-                                    onClose={handleClose}
-                                    scroll={scroll}
-                                    aria-labelledby="scroll-dialog-title"
-                                    aria-describedby="scroll-dialog-description"
-                                    fullWidth={true}
-                                    maxWidth="lg"
-                                >
-                                    <DialogTitle id="scroll-dialog-title">COVID19 Cases (All Time)</DialogTitle>
-                                    <DialogContent dividers={scroll === 'paper'}>
-                                        <TableContainer component={Paper}>
-                                            <Table aria-label="simple table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell>Continent</TableCell>
-                                                        <TableCell align="right">Total confirmed cases</TableCell>
-                                                        <TableCell align="right">% Global cases</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                    <TableBody>
-                                                        {continentData.map((data, index) => {
-                                                            return (
-                                                                <>
-                                                                    <TableRow key={index}>
-                                                                        <TableCell component="th" scope="row">
-                                                                            {data.key}
-                                                                        </TableCell>
-                                                                        <TableCell align="right">{data.value}</TableCell>
-                                                                        <TableCell align="right">{data.globalvalue.toFixed(4)}%</TableCell>
-                                                                    </TableRow>
-                                                                </>
-                                                            )
-                                                        })}
-                                                    </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleClose} color="primary" variant="outlined">
-                                            Close
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
-                            </Grid>
-                            <div className="transform-container">
-                                <TransformComponent>
-                                    <Svg width={window.innerWidth * .8} height={window.innerHeight * .7} className="svg-content">
-                                        <Pack
-                                            data={{children: continentData}}
-                                            sum={datum => datum.value}
-                                            size={[window.innerWidth * .8, (window.innerHeight * .65)]}
-                                            includeRoot={false}
-                                            padding={5}
-                                            nodeEnter={d => ({ ...d, r: 0 })}
-                                            animate={true}
-                                        >
-                                            {nodes => nodes.map(({ x, y, r, data, key }) => (
-                                            <>
-                                                {globalChange(data)}
-                                                <Tooltip title={
-                                                    <Fragment>
-                                                        <h2>{data.key}</h2>
-                                                        <h2>Total confirmed cases: {data.value}</h2>
-                                                        <h2>% Global cases: {data.globalvalue.toFixed(4)}%</h2>
-                                                    </Fragment>
-                                                }>
-                                                    <Circle
-                                                        key={key}
-                                                        cx={x}
-                                                        cy={y}
-                                                        r={r}
-                                                        fill={colorChange}
-                                                        stroke='#404040'
-                                                    />
-                                                </Tooltip>
-                                                    <Text
-                                                        x={x}
-                                                        y={y}
-                                                        fontSize={r*.225}
-                                                    >
-                                                        <tspan textAnchor="middle" dominantBaseline="after-edge">
-                                                            {data.key}
-                                                        </tspan>
-                                                    </Text>
-                                            </>
-                                            ))}
-                                        </Pack>
-                                    </Svg>
-                                </TransformComponent>
-                                <LegendDemo title="% Confirmed">
-                                    <LegendThreshold scale={thresholdScale}>
-                                    {labels => {
-                                        return labels.reverse().map((label, i) => {
-                                        const size = 15;
-                                        return (
-                                            <LegendItem
-                                            key={`legend-quantile-${i}`}
-                                            margin="1px 0"
-                                            >
-                                            <svg width={size} height={size}>
-                                                <rect fill={label.value} width={size} height={size} />
-                                            </svg>
-                                            <LegendLabel align={'left'} margin={'2px 0 0 10px'}>
-                                                {label.text}
-                                            </LegendLabel>
-                                            </LegendItem>
-                                        );
-                                        });
-                                    }}
-                                    </LegendThreshold>
-                                </LegendDemo>
-                            </div>
-                        </div>
-                    </React.Fragment>
-                )}
-                </TransformWrapper>
-            </div>
-            }
-        </div>
-    );
+
 }

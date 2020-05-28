@@ -151,7 +151,6 @@ body {
   flex-direction: row;
   align-items: center;
   width: 100%;
-  padding: 10px 2.5%;
 }
 
 .footer-container {
@@ -169,4 +168,16 @@ body {
 a:link.icon-link, a:visited.icon-link {
   text-decoration: none;
   color: white
+}
+
+.tooltip-content {
+  background: radial-gradient(circle, rgba(0,0,0,1) 0%, rgba(93,93,103,1) 0%, rgba(12,12,18,1) 100%);
+  position: relative;
+  bottom:95px;
+  /* right:150px; */
+  border: 1px solid #ffeda0;
+  color: #ffeda0;
+  padding: 5px;
+  z-index: 100;
+  min-width: 150px;
 }
