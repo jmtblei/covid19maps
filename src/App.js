@@ -91,7 +91,7 @@ function App() {
           </Grid> : 
             <RecoveredAT />} 
           />
-          <Route exact path="/about" render={() => <About />} />
+          {/* <Route exact path="/about" render={() => <About />} /> */}
       </Switch>
       <Footer />
     </div>
