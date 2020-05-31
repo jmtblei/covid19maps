@@ -186,14 +186,14 @@ export default () => {
             <div className="tooltip-content">
             {d.depth === 1 ? 
             <>
-            <h5 style={{margin:5}}>Region: {d.data[0]}</h5>
-            <h5 style={{margin:5}}>Total confirmed new deaths: {d.value}</h5>
+            <h3 style={{margin:5}}>{d.data[0]}</h3>
+            <h5 style={{margin:5}}>{d.value} Total new deaths</h5>
             </>
             : 
             <>
-            <h5 style={{margin:5}}>Country: {d.parent.parent[0]}</h5>
-            <h5 style={{margin:5}}>Total confirmed new deaths: {d.value}</h5>
-            <h5 style={{margin:5}}>% Global new deaths: {d.parent[0]}%</h5>
+            <h3 style={{margin:5}}>{d.parent.parent[0]}</h3>
+            <h5 style={{margin:5}}>{d.value} Confirmed new deaths</h5>
+            <h5 style={{margin:5}}>{d.parent[0]}% Global new deaths</h5>
             <img width="70%" height="70%" src={d.data[0]}></img>
             </> 
             }
