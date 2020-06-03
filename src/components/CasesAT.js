@@ -235,10 +235,21 @@ export default () => {
         }
     }, [open]); //rawdata
 
+    //Pre-load flag images
+    const PreLoadI = () => {
+        return (
+            arrangeAllData(countryData).map((d) => 
+            <div key={d.id} value={d.countrycode} style={{display:"none"}}>
+                <img src={d.countryflag}></img>
+            </div>
+            ))
+    };
+
     return (
              <TransformWrapper defaultScale={1}>
                 {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
                     <React.Fragment>
+                        <PreLoadI></PreLoadI>
                         <div>
                             <Collapse in={expand}>
                                 <Alert severity="info"
