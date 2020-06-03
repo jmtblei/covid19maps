@@ -202,7 +202,7 @@ export default () => {
         nodeLabels: d => {
             return d.depth > 1 ? null : (
             <g>
-                <text fontSize="1.5em" textAnchor="middle" fill={"#9fd0cb"} stroke={"black"}>
+                <text fontSize="1.5em" textAnchor="middle" fill={"white"} stroke={"black"}>
                     {d.inDegree > 0 ? d.data[0] : null}
                 </text>
             </g>
@@ -235,10 +235,21 @@ export default () => {
         }
     }, [open]); //rawdata
 
+    //Pre-load flag images
+    const PreLoadI = () => {
+        return (
+            arrangeAllData(countryData).map((d) => 
+            <div key={d.id} value={d.countrycode} style={{display:"none"}}>
+                <img src={d.countryflag}></img>
+            </div>
+            ))
+    };
+
     return (
              <TransformWrapper defaultScale={1}>
                 {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
                     <React.Fragment>
+                        <PreLoadI></PreLoadI>
                         <div>
                             <Collapse in={expand}>
                                 <Alert severity="info"

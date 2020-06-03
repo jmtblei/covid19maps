@@ -84,10 +84,14 @@ export default function SimpleMenu() {
                   aria-labelledby="alert-dialog-title"
                   aria-describedby="alert-dialog-description"
                 >
-                  <DialogTitle id="alert-dialog-title">{"Contributors"}</DialogTitle>
+                  <DialogTitle id="alert-dialog-title">{"About"}</DialogTitle>
                   <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
+                    <DialogContentText>
+                      This website uses circular packing (also known as a circular treemap) in conjunction with a heat-map theme to visualze hierarchic organization of data for regions/countries affected by Covid-19. Regions are grouped by continents, and countries are subgrouped within their respective region. The size and color of each circle is proportional to a specific case value.
+                    </DialogContentText>
+                    <Typography id="alert-dialog-description">
                         <div className="about-contributor">
+                            <h4>Contributors:</h4>
                             <a href="https://github.com/jmtblei" target="_blank" rel="noopener noreferrer" className="icon-link">
                                 <IconButton aria-label="github" color="primary" className="icon-color">
                                     <GitHub />
@@ -107,7 +111,7 @@ export default function SimpleMenu() {
                             <p> <b>Benson Lei</b> | Software Engineer
                             </p>
                         </div>
-                    </DialogContentText>
+                    </Typography>
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleClose} color="primary">
