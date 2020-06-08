@@ -239,7 +239,7 @@ export default () => {
     const PreLoadI = () => {
         return (
             arrangeAllData(countryData).map((d) => 
-            <div key={d.id} value={d.countrycode} style={{display:"none"}}>
+            <div key={d.id} value={d.countrycode} className="country-flag-pl">
                 <img src={d.countryflag}></img>
             </div>
             ))

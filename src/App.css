@@ -13,6 +13,10 @@ body {
   margin: 10px 0;
 }
 
+.country-flag-pl {
+  display: none
+}
+
 .svg-content {
   display: flex;
   flex-direction: row;
@@ -23,23 +27,9 @@ body {
   margin-top: 10px
 }
 
-.form-selection {
-  display: inline-block;
-  margin-left: 1rem;
-}
-
 .selection-container {
   display: flex;
   flex-direction: row;
-}
-
-#choose-region {
-  border-radius: 1rem;
-  background-color: #2976C2;
-  border: 1px solid #2976C2;
-  color: white;
-  outline: none;
-  padding: 5px
 }
 
 .transform-container {
@@ -82,8 +72,9 @@ a:link.icon-link, a:visited.icon-link {
   color: #ffeda0;
   padding: 5px;
   z-index: 100;
-  min-width: 150px;
+  min-width: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
