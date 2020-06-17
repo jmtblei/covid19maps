@@ -87,7 +87,7 @@ export default function SimpleMenu() {
                   <DialogTitle id="alert-dialog-title">{"About"}</DialogTitle>
                   <DialogContent>
                     <DialogContentText>
-                      This website uses circular packing (also known as a circular treemap) in conjunction with a heat-map theme to visualize hierarchical organization of data for regions/countries affected by Covid-19. Regions are grouped by continents, and countries are subgrouped within their respective region. The size and color of each circle is proportional to a specific case value.
+                      This website uses circular packing (also known as a circular treemap) in conjunction with a heat-map theme to visualize hierarchical organization of data for regions/countries affected by Covid-19. Regions are grouped by continents, and countries are sub-grouped within their respective region. The size and color of each circle is proportional to a specific case value.
                     </DialogContentText>
                     <Typography id="alert-dialog-description">
                         <div className="about-contributor">
