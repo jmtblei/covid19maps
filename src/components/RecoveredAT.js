@@ -23,7 +23,6 @@ import { Alert, AlertTitle } from "@material-ui/lab";
 import * as d3 from "d3";
 import * as d3Array from "d3-array"
 import * as d3Hierarchy from "d3-hierarchy";
-import * as d3Collection from "d3-collection";
 import NetworkFrame from "semiotic/lib/NetworkFrame";
 import { scaleThreshold } from "@vx/scale";
 import { LegendThreshold, LegendItem, LegendLabel } from "@vx/legend";
@@ -39,10 +38,6 @@ export default () => {
 
     const worldChange = (countryChange, globalChange) => {
         return ((countryChange / globalChange) * 100).toFixed(4)
-    };
-
-    const contChange = (countryChange, regionChange) => {
-        return ((countryChange / regionChange) * 100).toFixed(4)
     };
 
     const formatDate = (date) => {
@@ -67,33 +62,6 @@ export default () => {
             }
         })
     };
-
-    //-----------------------------LEGACY CODE--------------------------------------------------------------------------------------------------------
-    // const arrangeRegionData = (data) => {
-    //     let regionChange = data.reduce((a, c) => a + c.totalconfirmed, 0);
-    //     return data.map(datum => {
-    //         return {
-    //             ...datum,
-    //             regionpercent: contChange(datum.totalconfirmed, regionChange)
-    //         }
-    //     })
-    // };
-
-    
-    // const continentData = Array.from(covidContinents, ([key, value, globalvalue]) => ({
-    //     key, 
-    //     value: value.reduce((a, c) => a + c.totalconfirmed, 0), 
-    //     globalvalue: value.reduce((a, c) => a + c.globalpercent, 0)
-    // })).slice(0, -1);
-    // // console.log("continentData", continentData)
-    
-    // const continentChildren = Array.from(covidContinents, ([key, value, children]) => ({key, value: value.reduce((a, c) => a + c.totalconfirmed, 0), children: value}));
-    // const NorthAmericaData = continentChildren.filter(n => n.key === "North America");
-    // const SouthAmericaData = continentChildren.filter(n => n.key === "South America");
-    // const EuropeData = continentChildren.filter(n => n.key === "Europe");
-    // const AsiaData = continentChildren.filter(n => n.key === "Asia");
-    // const AfricaData = continentChildren.filter(n => n.key === "Africa");
-    // const AusOceData = continentChildren.filter(n => n.key === "Australia/Oceania");
     
     const continentsum = d3Array.rollup(arrangeAllData(countriesByRecoveries), v => d3.sum(v, d => d.recovered), v => v.continent, v => v.country, v => v.globalpercent, v => v.countryflag);
     // const continentsum = d3Array.rollup(countryData, v => d3.sum(v, d => d.recovered), v => v.continent, v => v.country, v => v.countryInfo);
@@ -106,20 +74,6 @@ export default () => {
     .sum(([ key, value ]) => value)
     .sort((a, b) => b.value - a.value)
     // console.log("hierdata", hierarchydata)
-    
-    //---------------WIP----------------------------------------------------------------------------------------------------
-    // const circlepack = () => d3.pack()
-    //     .size([window.innerWidth, (window.innerHeight * .65)])
-    //     .padding(1)
-    //     (hierarchydata)
-    
-    // const nestedData = d3Collection.nest().key(d =>d.continent).key(d => d.country).entries(countryData);
-    // console.log("nestedData", nestedData);
-    // const hierdata2 = d3Hierarchy.hierarchy(nestedData, d => d.values);
-    // console.log("hdata2", hierdata2);
-
-    // const covidContinents = d3Array.group(arrangeAllData(countriesByRecoveries), d => d.continent);
-    // // console.log("coviddata", covidContinents);
 
     //Legend scale VX
     const LegendDemo = ({ title, children }) => {
@@ -194,7 +148,7 @@ export default () => {
             <h3 style={{margin:5}}>{d.parent.parent[0]}</h3>
             <h5 style={{margin:5}}>{d.value} Confirmed recoveries</h5>
             <h5 style={{margin:5}}>{d.parent[0]}% Global recoveries</h5>
-            <img width="70%" height="70%" src={d.data[0]}></img>
+            <img width="70%" height="70%" src={d.data[0]} alt=""></img>
             </> 
             }
             </div>
