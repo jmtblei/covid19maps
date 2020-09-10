@@ -18,18 +18,12 @@ function App() {
   const isFetched2 = useSelector(state => state.isFetched2)
 
   useEffect(() => {
-    let timer = setInterval(() => {
-      dispatch(fetchNovelDataCountry())
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+      dispatch(fetchNovelDataCountry());
+  });
 
   useEffect(() => {
-    let timer = setInterval(() => {
-      dispatch(fetchNovelDataCountryYD())
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+      dispatch(fetchNovelDataCountryYD());
+  });
 
   return (
     <div className="App">
