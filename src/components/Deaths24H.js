@@ -57,7 +57,7 @@ export default () => {
                 totaldeaths: datum.deaths,
                 newcases: datum.todayCases,
                 newdeaths: datum.todayDeaths,
-                continent: datum.continent,
+                continent: datum.continent ? datum.continent : "Cruise Ships",
                 recovered: datum.recovered
             }
         })
@@ -116,8 +116,19 @@ export default () => {
             : d.parent[0] <= 5 ? "#fd8d3c"
             : d.parent[0] <= 7.5 ? "#fc4e2a"
             : d.parent[0] <= 10 ? "#e31a1c"
-            : "#b10026",
-            stroke: d.depth === 1 ? "#9fd0cb": "black",
+            : d.parent[0] > 10 ? "#b10026"
+            : "none",
+            stroke: d.depth === 1 ? "#9fd0cb" 
+            : d.parent[0] <= .1 ? "#ffffcc" 
+            : d.parent[0] <= .5 ? "#ffeda0"
+            : d.parent[0] <= 1 ? "#fed976"
+            : d.parent[0] <= 2.5 ? "#feb24c"
+            : d.parent[0] <= 5 ? "#fd8d3c"
+            : d.parent[0] <= 7.5 ? "#fc4e2a"
+            : d.parent[0] <= 10 ? "#e31a1c"
+            : d.parent[0] > 10 ? "#b10026"
+            : "none",
+            fillOpacity: 0.2,
         }),
         filterRenderedNodes: d => d.depth !== 0,
 
@@ -127,9 +138,27 @@ export default () => {
             {
             type: "highlight",
             style: d => ({
-                fill: "white",
-                stroke: "white",
-                fillOpacity: 0.4
+                fill: d.depth === 1 ? "#9fd0cb" 
+                : d.parent[0] <= .1 ? "#ffffcc" 
+                : d.parent[0] <= .5 ? "#ffeda0"
+                : d.parent[0] <= 1 ? "#fed976"
+                : d.parent[0] <= 2.5 ? "#feb24c"
+                : d.parent[0] <= 5 ? "#fd8d3c"
+                : d.parent[0] <= 7.5 ? "#fc4e2a"
+                : d.parent[0] <= 10 ? "#e31a1c"
+                : d.parent[0] > 10 ? "#b10026"
+                : "none",
+                stroke: d.depth === 1 ? "#9fd0cb" 
+                : d.parent[0] <= .1 ? "#ffffcc" 
+                : d.parent[0] <= .5 ? "#ffeda0"
+                : d.parent[0] <= 1 ? "#fed976"
+                : d.parent[0] <= 2.5 ? "#feb24c"
+                : d.parent[0] <= 5 ? "#fd8d3c"
+                : d.parent[0] <= 7.5 ? "#fc4e2a"
+                : d.parent[0] <= 10 ? "#e31a1c"
+                : d.parent[0] > 10 ? "#b10026"
+                : "none",
+                fillOpacity: 0.8
             })
             },
             { type: "frame-hover" }
@@ -141,13 +170,14 @@ export default () => {
             {d.depth === 1 ? 
             <>
             <h3 style={{margin:5}}>{d.data[0]}</h3>
-            <h5 style={{margin:5}}>{d.value} Total new deaths</h5>
+            <h5 style={{margin:5}}>{Number(d.value).toLocaleString()} Total new deaths</h5>
+            <h5 style={{margin:5}}>{parseFloat(worldChange(d.value, hierarchydata.value))}% Global new deaths</h5>
             </>
             : 
             <>
             <h3 style={{margin:5}}>{d.parent.parent[0]}</h3>
-            <h5 style={{margin:5}}>{d.value} Confirmed new deaths</h5>
-            <h5 style={{margin:5}}>{d.parent[0]}% Global new deaths</h5>
+            <h5 style={{margin:5}}>{Number(d.value).toLocaleString()} Confirmed new deaths</h5>
+            <h5 style={{margin:5}}>{Number(d.parent[0]).toLocaleString()}% Global new deaths</h5>
             <img width="70%" height="70%" src={d.data[0]} alt=""></img>
             </> 
             }
@@ -260,7 +290,7 @@ export default () => {
                                                                     <TableCell component="th" scope="row">
                                                                     {data.country}
                                                                     </TableCell>
-                                                                    <TableCell align="right">{data.newdeaths}</TableCell>
+                                                                    <TableCell align="right">{Number(data.newdeaths).toLocaleString()}</TableCell>
                                                                     <TableCell align="right">{data.globalpercent}%</TableCell>
                                                                 </TableRow>
                                                             </>
@@ -282,7 +312,7 @@ export default () => {
                             <TransformComponent>
                                 <NetworkFrame {...frameProps}/>
                             </TransformComponent>
-                            <LegendDemo title="% Confirmed">
+                            <LegendDemo title="% Global">
                                 <LegendThreshold scale={thresholdScale}>
                                     {labels => {
                                         return labels.reverse().map((label, i) => {
