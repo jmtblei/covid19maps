@@ -73,7 +73,7 @@ export default () => {
     d3Hierarchy.hierarchy([null, continentsum], childrenAccessor)
     .sum(([ key, value ]) => value)
     .sort((a, b) => b.value - a.value)
-    console.log("hierdata", hierarchydata)
+    // console.log("hierdata", hierarchydata)
     
     //Legend scale VX
     const LegendDemo = ({ title, children }) => {
