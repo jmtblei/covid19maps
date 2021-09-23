@@ -233,7 +233,7 @@ export default () => {
              <TransformWrapper defaultScale={1}>
                 {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
                     <React.Fragment>
-                        <PreLoadI></PreLoadI>
+                        {/* <PreLoadI></PreLoadI> */}
                         <div>
                             <Collapse in={expand}>
                                 <Alert severity="info"
