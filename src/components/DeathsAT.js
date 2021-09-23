@@ -312,7 +312,7 @@ export default () => {
                             <TransformComponent>
                                 <NetworkFrame {...frameProps}/>
                             </TransformComponent>
-                            <LegendDemo title="% Global">
+                            <LegendDemo title="% Global Share">
                                 <LegendThreshold scale={thresholdScale}>
                                     {labels => {
                                         return labels.reverse().map((label, i) => {

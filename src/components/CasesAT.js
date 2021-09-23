@@ -29,7 +29,7 @@ import { LegendThreshold, LegendItem, LegendLabel } from "@vx/legend";
 
 export default () => {
     const countryData = useSelector(state => state.countryData);
-    console.log("statedata", countryData)
+    // console.log("statedata", countryData)
 
     const countriesByCases = countryData
         .filter(data => data.cases > 0)
@@ -323,7 +323,7 @@ export default () => {
                             <TransformComponent>
                                 <NetworkFrame {...frameProps}/>
                             </TransformComponent>
-                            <LegendDemo title="% Global">
+                            <LegendDemo title="% Global Share">
                                 <LegendThreshold scale={thresholdScale}>
                                     {labels => {
                                         return labels.reverse().map((label, i) => {
