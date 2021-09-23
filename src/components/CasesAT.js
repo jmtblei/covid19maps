@@ -220,14 +220,14 @@ export default () => {
     }, [open]); //rawdata
 
     //Pre-load flag images
-    const PreLoadI = () => {
-        return (
-            arrangeAllData(countryData).map((d) => 
-            <div key={d.id} value={d.countrycode} className="country-flag-pl">
-                <img src={d.countryflag} alt=""></img>
-            </div>
-            ))
-    };
+    // const PreLoadI = () => {
+    //     return (
+    //         arrangeAllData(countryData).map((d) => 
+    //         <div key={d.id} value={d.countrycode} className="country-flag-pl">
+    //             <img src={d.countryflag} alt=""></img>
+    //         </div>
+    //         ))
+    // };
 
     return (
              <TransformWrapper defaultScale={1}>
