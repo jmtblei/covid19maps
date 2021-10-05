@@ -108,7 +108,7 @@ export default function SimpleMenu() {
                                 </IconButton>
                             </a>
                             <br />
-                            <p> <b>Benson Lei</b> | Software Engineer
+                            <p> <b>Benson Lei</b> | Full Stack Developer
                             </p>
                         </div>
                     </Typography>
