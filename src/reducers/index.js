@@ -2,14 +2,16 @@ import {
     FETCHING_DATA,
     FETCH_CDATA_SUCCESS,
     FETCH_CDATAYD_SUCCESS,
+    FETCH_NDATA_SUCCESS,
     FETCH_DATA_FAIL
 } from "../actions/index";
 
 const initialState = {
     error: "",
     isFetching: false,
-    isFetched: false,
-    isFetched2: false,
+    isFetchedData: false,
+    isFetchedDataYD: false,
+    isFetchedDataNews: false,
 };
 
 export default(state = initialState, action) => {
@@ -24,7 +26,7 @@ export default(state = initialState, action) => {
             return {
                 ...state,
                 isFetching: false,
-                isFetched: true,
+                isFetchedData: true,
                 countryData: action.payload
             }
         }
@@ -32,8 +34,16 @@ export default(state = initialState, action) => {
             return {
                 ...state,
                 isFetching: false,
-                isFetched2: true,
+                isFetchedDataYD: true,
                 countryDataYD: action.payload
+            }
+        }
+        case FETCH_NDATA_SUCCESS: {
+            return {
+                ...state,
+                isFetching: false,
+                isFetchedDataNews: true,
+                newsData: action.payload
             }
         }
         case FETCH_DATA_FAIL: {

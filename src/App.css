@@ -13,10 +13,6 @@ body {
   margin: 10px 0;
 }
 
-.country-flag-pl {
-  display: none
-}
-
 .svg-content {
   display: flex;
   flex-direction: row;
@@ -77,4 +73,12 @@ a:link.icon-link, a:visited.icon-link {
   align-items: center;
   justify-content: center;
   transform: scale(.8)
+}
+
+.news  {
+  width: 90%
+}
+
+a {
+  text-decoration: none;
 }

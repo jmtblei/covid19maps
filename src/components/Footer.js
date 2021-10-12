@@ -9,7 +9,7 @@ export default () => {
         <div className="footer-container">
             <div className="footer-text-container">
                 <p>
-                    This website uses publicly available data from various sources including but not limited to collaborative and collective efforts, local governments, WHO, and John Hopkins CSSE. The contents of this website are not guaranteed to be accurate or updated in a timely manner, and are for informational purposes only. Reliance on this website for medical guidance is advised against.
+                    This website uses publicly available data from various sources including but not limited to collaborative and collective efforts, local governments, WHO, and John Hopkins CSSE. News articles powered by Bing. The contents of this website are not guaranteed to be accurate or updated in a timely manner, and are for informational purposes only. Reliance on this website for medical guidance is advised against.
                 </p>
             </div>
             <div> 

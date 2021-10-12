@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import "./App.css"
-import { fetchNovelDataCountry, fetchNovelDataCountryYD } from "./actions/index";
+import { fetchNewsData, fetchNovelDataCountry, fetchNovelDataCountryYD } from "./actions/index";
 import TopNav from "./components/TopNav";
+import News from "./components/News";
 import CasesAT from "./components/CasesAT";
 import Cases24H from "./components/Cases24H";
 import Deaths24H from "./components/Deaths24H";
@@ -14,28 +15,38 @@ import { CircularProgress, Grid } from "@material-ui/core";
 
 function App() {
   const dispatch = useDispatch();
-  const isFetched = useSelector(state => state.isFetched);
-  const isFetched2 = useSelector(state => state.isFetched2)
+  const isFetchedData = useSelector(state => state.isFetchedData);
+  const isFetchedDataYD = useSelector(state => state.isFetchedDataYD)
+  const isFetchedDataNews = useSelector(state => state.isFetchedDataNews)
 
   useEffect(() => {
-    let timer = setInterval(() => {
       dispatch(fetchNovelDataCountry())
-    }, 5000);
-    return () => clearInterval(timer);
-  },);
+  });
 
   useEffect(() => {
-    let timer = setInterval(() => {
       dispatch(fetchNovelDataCountryYD())
-    }, 5000);
-    return () => clearInterval(timer);
-  },);
+  });
+
+  useEffect(() => {
+    dispatch(fetchNewsData())
+  });
 
   return (
     <div className="App">
       <TopNav />
       <Switch>
-        <Route exact path="/" render={() => !isFetched ? 
+        <Route exact path="/" render={() => !isFetchedDataNews ? 
+          <Grid 
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+          >
+            <CircularProgress color="primary" size="10em"/>
+          </Grid> : 
+            <News />} 
+          />
+        <Route exact path="/cases-all-time" render={() => !isFetchedData ? 
           <Grid 
             container
             direction="row"
@@ -45,8 +56,8 @@ function App() {
             <CircularProgress color="primary" size="10em"/>
           </Grid> : 
             <CasesAT />} 
-          />
-        <Route exact path="/confirmed-24h" render={() => !isFetched2 ? 
+          />  
+        <Route exact path="/confirmed-24h" render={() => !isFetchedDataYD ? 
           <Grid 
             container
             direction="row"
@@ -57,7 +68,7 @@ function App() {
           </Grid> : 
             <Cases24H />} 
           />
-        <Route exact path="/deaths-24h" render={() => !isFetched2 ? 
+        <Route exact path="/deaths-24h" render={() => !isFetchedDataYD ? 
           <Grid 
             container
             direction="row"
@@ -68,7 +79,7 @@ function App() {
           </Grid> : 
             <Deaths24H />}
           />
-        <Route exact path="/deaths-all-time" render={() => !isFetched ? 
+        <Route exact path="/deaths-all-time" render={() => !isFetchedData ? 
           <Grid 
             container
             direction="row"
@@ -79,7 +90,7 @@ function App() {
           </Grid> : 
             <DeathsAT />} 
           />
-        <Route exact path="/recoveries-all-time" render={() => !isFetched ? 
+        <Route exact path="/recoveries-all-time" render={() => !isFetchedData ? 
           <Grid 
             container
             direction="row"
