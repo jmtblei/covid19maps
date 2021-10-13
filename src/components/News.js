@@ -45,7 +45,7 @@ export default () => {
           }
         >
           <AlertTitle>
-            Recent worldwide news articles covering Covid-19,
+            Recent worldwide news articles covering Covid-19.
           </AlertTitle>
         </Alert>
       </Collapse>
