@@ -65,7 +65,7 @@ export default () => {
                     ></img>
                     </Avatar>
                 }
-                title={news.name}
+                title={news.name.length > 100 ? `${news.name.substring(0, 100)}...` : news.name}
                 subheader={`${moment(news.datePublished).startOf("ss").fromNow()} by ${news.provider[0]?.name}`}
                 />
                 <CardMedia className={styles.newsMedia}>
