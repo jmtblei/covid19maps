@@ -11,7 +11,6 @@ export const useStyles = makeStyles((theme) => ({
         margin: 10,
     },
     newsHeader: {
-        height: 80,
         padding: 10
     },
     newsThumb: {

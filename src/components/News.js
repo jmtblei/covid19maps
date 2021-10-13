@@ -7,9 +7,13 @@ import {
   CardMedia,
   CardContent,
   CardActionArea,
+  Collapse,
   Grid,
+  IconButton,
   Typography,
 } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
+import { Alert, AlertTitle } from "@material-ui/lab";
 import moment from "moment";
 import { useStyles } from "../styles";
 
@@ -20,7 +24,32 @@ export default () => {
   const newsData = useSelector((state) => state.newsData);
   const styles = useStyles();
 
+  const [expand, setExpand] = React.useState(true); //alert
+
   return (
+    <>
+    <div>
+      <Collapse in={expand}>
+        <Alert severity="info"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setExpand(false);
+              }}
+            >
+              <Close fontSize="inherit" />
+                </IconButton>
+          }
+        >
+          <AlertTitle>
+            Recent worldwide news articles covering Covid-19,
+          </AlertTitle>
+        </Alert>
+      </Collapse>
+    </div>
     <Grid container spacing={4} className={styles.news}>
       {newsData.value.map((news, i) => (
           <Grid item>
@@ -54,5 +83,6 @@ export default () => {
           </Grid>
       ))}
     </Grid>
+    </>
   );
 };
