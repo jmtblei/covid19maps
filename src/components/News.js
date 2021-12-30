@@ -65,15 +65,15 @@ export default () => {
                     ></img>
                     </Avatar>
                 }
-                title={news.name.length > 100 ? `${news.name.substring(0, 100)}...` : news.name}
+                title={news.name.length > 75 ? `${news.name.substring(0, 75)}...` : news.name}
                 subheader={`${moment(news.datePublished).startOf("ss").fromNow()} by ${news.provider[0]?.name}`}
                 />
                 <CardMedia className={styles.newsMedia}>
                 <img src={news?.image?.thumbnail?.contentUrl || { placeholderImg }}alt="" className={styles.newsImage}></img>
                     <CardContent>
                         <Typography variant="caption">
-                            {news.description.length > 150
-                            ? `${news.description.substring(0, 150)}...`
+                            {news.description.length > 125
+                            ? `${news.description.substring(0, 125)}...`
                             : news.description}
                         </Typography>
                     </CardContent>
