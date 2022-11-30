@@ -1,3 +1,5 @@
+*AS OF 28 NOVEMBER 2022, HEROKU FREE DYNOS HAVE BECOME DEPRACATED AND WILL LONGER BE MAINTAINED FOR THIS PROJECT - YOU MAY EXPERIENCE ISSUES WITH CONNECTING TO THE DB*
+
 ## Covid19maps
 
 A web-based desktop dashboard that uses circular packing (also known as a circular treemap) in conjunction with a heat-map theme to visualize hierarchical organization of data for regions/countries affected by Covid-19. Regions are grouped by continents, and countries are sub-grouped within their respective region. The size and color of each circle is proportional to a specific case value. This app was built for informational purposes only and uses publicly available data from various sources including but not limited to collaborative collect efforts, local governments, the World Health Organization, and John Hopkins CSSE. Bootstrapped with [Create React App](https://github.com/facebook/create-react-app) using [NovelCOVID API](https://github.com/NovelCOVID/API). Documentation for NovelCOVID API can be found [here](https://disease.sh/docs/).
